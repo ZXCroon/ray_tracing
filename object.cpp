@@ -57,6 +57,7 @@ void SimpleObject::setTransmittance(ld transmittance_) {
 }
 
 void SimpleObject::setRefractivity(ld refractivity_) {
+  assert(refractivity_ > 1 || fabs(double(refractivity_ - 1)) < eps);
   refractivity = refractivity_;
 }
 
@@ -66,7 +67,22 @@ vector<ray> SimpleObject::getEmergentRays() {
     gVector dir = -mirror(inl.v, normalVector);
     emergentRays.push_back(ray(Line(intersection + eps * dir, dir), reflectance));
   }
-  if (transmittance)
+  if (transmittance > eps) {
+    if (dot(normalVector, inl.v) < 0) {
+      ld i = angle(-normalVector, inl.v);
+      ld r = asin(double(sin(i) / refractivity));
+      ld len = sin(i - r) / sin(r);
+      gVector dir = normalize(inl.v - len * normalVector);
+      emergentRays.push_back(ray(Line(intersection + eps * dir, dir), transmittance));
+    }
+    else {
+      ld i = angle(normalVector, inl.v);
+      ld r = asin(double(sin(i) * refractivity));
+      ld len = sin(r - i) / sin(r);
+      gVector dir = normalize(inl.v + len * normalVector);
+      emergentRays.push_back(ray(Line(intersection + eps * dir, dir), transmittance));
+    }
+  }
   return emergentRays;
 }
 

@@ -73,11 +73,12 @@ Vec3b Scene::rayTracing(Line l, ld decay) {
         break;
       }
     }
+    ///
+    // occluded = false;
+    ///
+
     if (!occluded) {
       color += firstObject->localIllumination(inten, direction);
-    }
-    else {
-      std::cout << firstObject->getIntersection() << std::endl;
     }
   }
 

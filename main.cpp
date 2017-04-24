@@ -2,23 +2,25 @@
 #include "scene.h"
 
 int main() {
-  Scene scene(480, 640, gPoint(240, 120, -500));
+  Scene scene(480, 640, gPoint(320, 180, -500));
   scene.setAmbientLight(new AmbientLight(Vec3b(150, 150, 150)));
 
-  Light *light = new PointLight(gPoint(320, 240, -500), Vec3b(40, 40, 40));
+  Light *light = new PointLight(gPoint(120, 40, 150), Vec3b(40, 40, 40));
   scene.addLight(light);
   scene.addLight(new PointLight(gPoint(320, 10, 20), Vec3b(200, 200, 200)));
-  BasicObject *sphere = new Sphere(gPoint(240, 320, 50), 100);
+  BasicObject *sphere = new Sphere(gPoint(340, 380, 100), 100);
   SimpleObject *object = new SimpleObject(sphere, Vec3b(40, 200, 10));
   // object->setKS(0.9);
-  object->setKS(0.9);
-
+  object->setKS(0.6);
+  object->setKD(0, 0, 0);
+  object->setKA(0.3, 0.6, 0.3);
+  object->setTransmittance(0.8);
+  object->setRefractivity(1.1);
   scene.addObject(object);
 
-  BasicObject *sphere1 = new Sphere(gPoint(420, 240, 210), 80);
+  BasicObject *sphere1 = new Sphere(gPoint(320, 340, 210), 80);
   SimpleObject *object1 = new SimpleObject(sphere1, Vec3b(140, 100, 180));
-  object1->setKS(0);
-  object1->setReflectance(0.6);
+  object1->setKS(0.6);
   scene.addObject(object1);
 
   BasicObject *wall[5];
@@ -34,18 +36,23 @@ int main() {
     wa[i] = new SimpleObject(wall[i], Vec3b(180, 200, 30));
     wa[i]->setKS(0.1);
     // scene.addObject(wa[i]);
+    /*
     wa[i]->setKS(0.2);
     wa[i]->setKD(0, 0, 0);
     wa[i]->setKA(0, 0, 0);
     wa[i]->setReflectance(0.8);
+     */
   }
 
-  /*
+  delete wa[4];
+  wa[4] = new SimpleObject(wall[4], Vec3b(100, 30, 80));
+
   wa[3]->setKS(0.2);
   wa[3]->setKD(0, 0, 0);
   wa[3]->setKA(0, 0, 0);
   wa[3]->setReflectance(0.8);
 
+  /*
   wa[4]->setKS(0.2);
   wa[4]->setKD(0, 0, 0);
   wa[4]->setKA(0, 0, 0);

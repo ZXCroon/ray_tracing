@@ -17,12 +17,7 @@ bool Plane::intersection(Line l, gPoint &I, gVector &n) {
     return false;
   }
   I = l.P + l.v * len;
-  if (dot(this->v, l.v) > 0) {
-    n = -this->v;
-  }
-  else {
-    n = this->v;
-  }
+  n = this->v;
   return true;
 }
 
@@ -49,8 +44,5 @@ bool Sphere::intersection(Line l, gPoint &I, gVector &n) {
   }
   I = l.P + l.v * len;
   n = normalize(I - this->O);
-  if (!outside) {
-    n = -n;
-  }
   return true;
 }
