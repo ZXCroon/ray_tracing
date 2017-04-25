@@ -36,14 +36,15 @@ int main() {
     wa[i] = new SimpleObject(wall[i], Vec3b(180, 200, 30));
     wa[i]->setKS(0.1);
     // scene.addObject(wa[i]);
-    /*
+
     wa[i]->setKS(0.2);
     wa[i]->setKD(0, 0, 0);
     wa[i]->setKA(0, 0, 0);
-    wa[i]->setReflectance(0.8);
-     */
+    wa[i]->setReflectance(0.93);
+
   }
 
+  /*
   delete wa[4];
   wa[4] = new SimpleObject(wall[4], Vec3b(100, 30, 80));
 
@@ -51,6 +52,7 @@ int main() {
   wa[3]->setKD(0, 0, 0);
   wa[3]->setKA(0, 0, 0);
   wa[3]->setReflectance(0.8);
+   */
 
   /*
   wa[4]->setKS(0.2);
