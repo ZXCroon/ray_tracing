@@ -4,8 +4,8 @@
 
 #include "scene.h"
 
-Scene::Scene(int height_, int width_, gPoint viewpoint_) :
-        height(height_), width(width_), viewpoint(viewpoint_), ambientLight(new AmbientLight(Vec3b(0, 0, 0))) {}
+Scene::Scene(int height_, int width_, int zScreen_, gPoint aperture_) :
+        height(height_), width(width_), zScreen(zScreen_), aperture(aperture_), ambientLight(new AmbientLight(Vec3b(0, 0, 0))) {}
 
 void Scene::addObject(Object *object_) {
   objects.push_back(object_);
@@ -23,7 +23,7 @@ Mat Scene::render() {
   Mat res(height, width, CV_8UC3);
   for (int i = 0; i < res.rows; ++i) {
     for (int j = 0; j < res.cols; ++j) {
-      res.at<Vec3b>(i, j) = rayTracing(Line(viewpoint, gVector(j, i, 0) - viewpoint), 1);
+      res.at<Vec3b>(i, j) = rayTracing(Line(aperture, aperture - gPoint(res.cols - j, res.rows - i, zScreen)), 1);
     }
   }
   return res;

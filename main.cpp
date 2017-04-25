@@ -2,7 +2,7 @@
 #include "scene.h"
 
 int main() {
-  Scene scene(480, 640, gPoint(320, 180, -500));
+  Scene scene(480, 640, -450, gPoint(320, 280, -200));
   scene.setAmbientLight(new AmbientLight(Vec3b(150, 150, 150)));
 
   Light *light = new PointLight(gPoint(120, 40, 150), Vec3b(40, 40, 40));
@@ -37,10 +37,12 @@ int main() {
     wa[i]->setKS(0.1);
     // scene.addObject(wa[i]);
 
+    /*
     wa[i]->setKS(0.2);
     wa[i]->setKD(0, 0, 0);
     wa[i]->setKA(0, 0, 0);
     wa[i]->setReflectance(0.93);
+     */
 
   }
 

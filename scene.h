@@ -11,15 +11,15 @@
 
 class Scene {
 public:
-  Scene(int height_, int width_, gPoint viewpoint);
+  Scene(int height_, int width_, int zScreen_, gPoint aperture_);
   void addObject(Object *object_);
   void setAmbientLight(AmbientLight *ambientLight_);
   void addLight(Light *light_);
   Mat render();
 
 private:
-  int width, height;
-  gPoint viewpoint;
+  int width, height, zScreen;
+  gPoint aperture;
   vector<Object *> objects;
   AmbientLight *ambientLight;
   vector<Light *> lights;
