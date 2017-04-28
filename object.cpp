@@ -48,6 +48,14 @@ void SimpleObject::setKS(ld kS_) {
   kS = kS_;
 }
 
+void SimpleObject::KDMultiple(ld factor) {
+  kD = kD * factor;
+}
+
+void SimpleObject::KAMultiple(ld factor) {
+  kA = kA * factor;
+}
+
 void SimpleObject::setReflectance(ld reflectance_) {
   reflectance = reflectance_;
 }
@@ -63,17 +71,21 @@ void SimpleObject::setRefractivity(ld refractivity_) {
 
 vector<ray> SimpleObject::getEmergentRays() {
   vector<ray> emergentRays;
-  if (reflectance > eps) {
-    gVector dir = -mirror(inl.v, normalVector);
-    emergentRays.push_back(ray(Line(intersection + eps * dir, dir), reflectance));
-  }
+  ld reflectance1 = reflectance;
   if (transmittance > eps) {
     if (dot(normalVector, inl.v) < 0) {
       ld i = angle(-normalVector, inl.v);
-      ld r = asin(double(sin(i) / refractivity));
-      ld len = sin(i - r) / sin(r);
-      gVector dir = normalize(inl.v - len * normalVector);
-      emergentRays.push_back(ray(Line(intersection + eps * dir, dir), transmittance));
+      ld sinr = sin(i) / refractivity;
+      if (sinr > 1) {
+        reflectance1 += transmittance;
+        reflectance1 = fmax(1, reflectance1);
+      }
+      else {
+        ld r = asin(double(sinr));
+        ld len = sin(i - r) / sin(r);
+        gVector dir = normalize(inl.v - len * normalVector);
+        emergentRays.push_back(ray(Line(intersection + eps * dir, dir), transmittance));
+      }
     }
     else {
       ld i = angle(normalVector, inl.v);
@@ -82,6 +94,10 @@ vector<ray> SimpleObject::getEmergentRays() {
       gVector dir = normalize(inl.v + len * normalVector);
       emergentRays.push_back(ray(Line(intersection + eps * dir, dir), transmittance));
     }
+  }
+  if (reflectance1 > eps) {
+    gVector dir = -mirror(inl.v, normalVector);
+    emergentRays.push_back(ray(Line(intersection + eps * dir, dir), reflectance1));
   }
   return emergentRays;
 }

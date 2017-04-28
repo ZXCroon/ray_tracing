@@ -38,6 +38,8 @@ public:
   void setKD(ld kDb_, ld kDg_, ld kDr_);
   void setKA(ld kAb_, ld kAg_, ld kAr_);
   void setKS(ld kS_);
+  void KDMultiple(ld factor);
+  void KAMultiple(ld factor);
   void setReflectance(ld reflectance_);
   void setTransmittance(ld transmittance_);
   void setRefractivity(ld refractivity_);

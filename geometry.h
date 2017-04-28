@@ -6,6 +6,7 @@
 #define RAY_TRACING_GEOMETRY_H
 
 #include "base.h"
+#include "gmath.h"
 
 class gPoint {
 public:
@@ -46,6 +47,7 @@ gVector normalize(gVector v);
 bool parellel(gVector v1, gVector v2);
 bool perpendicular(gVector v1, gVector v2);
 gVector mirror(gVector v, gVector pivot);
+bool coplanar(vector<gPoint> vList);
 
 Vec3b operator*(ld k, Vec3b v);
 Vec3b operator*(gVector k, Vec3b v);

@@ -96,6 +96,17 @@ gVector mirror(gVector v, gVector pivot) {
   return 2 * dot(v, pivot) * pivot / dot(pivot, pivot)  - v;
 }
 
+bool coplanar(vector<gPoint> vList) {
+  for (int i = 0; i < vList.size() - 3; ++i) {
+    gVector v1 = vList[i + 1] - vList[i];
+    gVector v2 = vList[i + 2] - vList[i];
+    gVector v3 = vList[i + 3] - vList[i];
+    if (fabs(double(det(v1[0], v1[1], v1[2], v2[0], v2[1], v2[2], v3[0], v3[1], v3[2]))) > eps) {
+      return false;
+    }
+  }
+  return true;
+}
 
 Vec3b operator*(ld k, Vec3b c) {
   return Vec3b(saturate_cast<uchar>(double(k * c[0])),

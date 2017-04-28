@@ -7,6 +7,8 @@
 
 #include "geometry.h"
 
+typedef vector<int> orderVector;
+
 class BasicObject {
 public:
   virtual bool intersection(Line l, gPoint &I, gVector &n) = 0;
@@ -22,6 +24,15 @@ public:
   bool intersection(Line l, gPoint &I, gVector &n);
 };
 
+class Facet : public BasicObject {
+public:
+  Facet(vector<gPoint> vList_);
+  bool intersection(Line l, gPoint &I, gVector &n);
+private:
+  vector<gPoint> vList;
+  bool inside(gPoint P);
+};
+
 class Sphere : public BasicObject {
 public:
   gPoint O;
@@ -29,6 +40,16 @@ public:
   Sphere(gPoint O_, ld r_);
 
   bool intersection(Line l, gPoint &I, gVector &n);
+};
+
+class Mesh : public BasicObject {
+public:
+  Mesh(vector<gPoint> vList_, vector<orderVector> fList_);
+  bool intersection(Line l, gPoint &I, gVector &n);
+
+private:
+  vector<gPoint> vList;
+  vector <orderVector> fList;
 };
 
 #endif //RAY_TRACING_BASIC_OBJECT_H
