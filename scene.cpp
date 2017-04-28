@@ -5,7 +5,12 @@
 #include "scene.h"
 
 Scene::Scene(int height_, int width_, int zScreen_, gPoint aperture_) :
-        height(height_), width(width_), zScreen(zScreen_), aperture(aperture_), ambientLight(new AmbientLight(Vec3b(0, 0, 0))) {}
+        height(height_), width(width_), zScreen(zScreen_), aperture(aperture_), ambientLight(new AmbientLight(Vec3b(0, 0, 0))),
+        radius(1) {}
+
+Scene::Scene(int height_, int width_, int zScreen_, gPoint aperture_, int radius_) :
+        height(height_), width(width_), zScreen(zScreen_), aperture(aperture_), ambientLight(new AmbientLight(Vec3b(0, 0, 0))),
+        radius(radius_) {}
 
 void Scene::addObject(Object *object_) {
   objects.push_back(object_);
@@ -23,7 +28,23 @@ Mat Scene::render() {
   Mat res(height, width, CV_8UC3);
   for (int i = 0; i < res.rows; ++i) {
     for (int j = 0; j < res.cols; ++j) {
-      res.at<Vec3b>(i, j) = rayTracing(Line(aperture, aperture - gPoint(res.cols - j, res.rows - i, zScreen)), 1);
+      Line l(aperture, aperture - gPoint(res.cols - j, res.rows - i, zScreen));
+      Vec3i colorSum(0, 0, 0);
+      Plane *focalPlane = new Plane(gPoint(0, 0, -zScreen), gVector(0, 0, -1));
+      gPoint P;
+      gVector v;
+      focalPlane->intersection(l, P, v);
+
+      for (int k = 0; k < radius * 10; ++k) {
+        int rou = rand() % radius;
+        ld theta = (ld)(rand() % 360000) / 1000 / 180 * 3.1415926;
+        gPoint startPoint = aperture + gVector(rou * cos(theta), rou * sin(theta), 0);
+
+        Line ray(startPoint, P - startPoint);
+        colorSum += rayTracing(ray, 1);
+      }
+
+      res.at<Vec3b>(i, j) = colorSum / (radius * 10);
     }
   }
   return res;

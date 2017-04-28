@@ -1,3 +1,0 @@
-/home/zxcroon/Development/Workspace/CG-course/ray_tracing/cmake-build-debug/CMakeFiles/edit_cache.dir
-/home/zxcroon/Development/Workspace/CG-course/ray_tracing/cmake-build-debug/CMakeFiles/rebuild_cache.dir
-/home/zxcroon/Development/Workspace/CG-course/ray_tracing/cmake-build-debug/CMakeFiles/ray_tracing.dir

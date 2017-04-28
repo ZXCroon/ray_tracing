@@ -6,6 +6,7 @@
 #define RAY_TRACING_BASE_H
 
 #include <iostream>
+#include <cstdlib>
 #include <cmath>
 #include <vector>
 #include <utility>
