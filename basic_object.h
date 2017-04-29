@@ -42,14 +42,4 @@ public:
   bool intersection(Line l, gPoint &I, gVector &n);
 };
 
-class Mesh : public BasicObject {
-public:
-  Mesh(vector<gPoint> vList_, vector<orderVector> fList_);
-  bool intersection(Line l, gPoint &I, gVector &n);
-
-private:
-  vector<gPoint> vList;
-  vector <orderVector> fList;
-};
-
 #endif //RAY_TRACING_BASIC_OBJECT_H

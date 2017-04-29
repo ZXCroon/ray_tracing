@@ -1,5 +1,6 @@
 #include <iostream>
 #include "scene.h"
+#include "mesh.h"
 
 int main() {
   Scene scene(300, 400, -220, gPoint(200, 200, -50));

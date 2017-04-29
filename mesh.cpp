@@ -2,7 +2,7 @@
 // Created by zxcroon on 17-4-28.
 //
 
-#include "basic_object.h"
+#include "mesh.h"
 
 Mesh::Mesh(vector<gPoint> vList_, vector<orderVector> fList_) : vList(vList_), fList(fList_) {}
 
