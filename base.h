@@ -9,6 +9,8 @@
 #include <cstdlib>
 #include <cmath>
 #include <vector>
+#include <set>
+#include <list>
 #include <utility>
 #include <opencv2/highgui/highgui.hpp>
 
