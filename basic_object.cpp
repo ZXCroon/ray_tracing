@@ -110,3 +110,92 @@ bool Facet::inside(gPoint P) {
 
   return cnt == 4;
 }
+
+
+Box::Box(ld xmin_, ld xmax_, ld ymin_, ld ymax_, ld zmin_, ld zmax_) :
+        xmin(xmin_), xmax(xmax_), ymin(ymin_), ymax(ymax_), zmin(zmin_), zmax(zmax_) {}
+
+bool Box::intersection(Line l, gPoint &I, gVector &n) {
+  if (l.P.x < xmin && l.v.x <= 0 || l.P.x > xmax && l.v.x >= 0) {
+    return false;
+  }
+  if (l.P.y < ymin && l.v.y <= 0 || l.P.y > ymax && l.v.y >= 0) {
+    return false;
+  }
+  if (l.P.z < zmin && l.v.z <= 0 || l.P.z > zmax && l.v.z >= 0) {
+    return false;
+  }
+
+  ld x0, y0, z0;
+  if (l.P.x < xmin  && l.v.x > 0 || l.P.x >= xmin && l.P.x <= xmax && l.v.x < 0) {
+    x0 = xmin;
+  }
+  if (l.P.x > xmax  && l.v.x < 0 || l.P.x >= xmin && l.P.x <= xmax && l.v.x > 0) {
+    x0 = xmax;
+  }
+  if (l.P.y < ymin  && l.v.y > 0 || l.P.y >= ymin && l.P.y <= ymax && l.v.y < 0) {
+    y0 = ymin;
+  }
+  if (l.P.y > ymax  && l.v.y < 0 || l.P.y >= ymin && l.P.y <= ymax && l.v.y > 0) {
+    y0 = ymax;
+  }
+  if (l.P.z < zmin  && l.v.z > 0 || l.P.z >= zmin && l.P.z <= zmax && l.v.z < 0) {
+    z0 = zmin;
+  }
+  if (l.P.z > zmax  && l.v.z < 0 || l.P.z >= zmin && l.P.z <= zmax && l.v.z > 0) {
+    z0 = zmax;
+  }
+
+  ld tx = (x0 - l.P.x) / l.v.x;
+  ld ty = (y0 - l.P.y) / l.v.y;
+  ld tz = (z0 - l.P.z) / l.v.z;
+  bool its = false;
+  ld nowt;
+
+  if (!its || tx < nowt) {
+    gPoint I1 = l.P + l.v * tx;
+    if (I1.y >= ymin && I1.y <= ymax && I1.z >= zmin && I1.z <= zmax) {
+      its = true;
+      nowt = tx;
+      I = I1;
+      if (fabs(x0 - xmin) < eps) {
+        n = gVector(-1, 0, 0);
+      }
+      else {
+        n = gVector(1, 0, 0);
+      }
+    }
+  }
+
+  if (!its || ty < nowt) {
+    gPoint I1 = l.P + l.v * ty;
+    if (I1.z >= zmin && I1.z <= zmax && I1.x >= xmin && I1.x <= xmax) {
+      its = true;
+      nowt = ty;
+      I = I1;
+      if (fabs(y0 - ymin) < eps) {
+        n = gVector(0, -1, 0);
+      }
+      else {
+        n = gVector(0, 1, 0);
+      }
+    }
+  }
+
+  if (!its || tz < nowt) {
+    gPoint I1 = l.P + l.v * tz;
+    if (I1.x >= xmin && I1.x <= xmax && I1.y >= ymin && I1.y <= ymax) {
+      its = true;
+      nowt = tz;
+      I = I1;
+      if (fabs(z0 - zmin) < eps) {
+        n = gVector(0, 0, -1);
+      }
+      else {
+        n = gVector(0, 0, 1);
+      }
+    }
+  }
+
+  return its;
+}

@@ -42,4 +42,12 @@ public:
   bool intersection(Line l, gPoint &I, gVector &n);
 };
 
+class Box : public BasicObject {
+public:
+  Box(ld xmin_, ld xmax_, ld ymin_, ld ymax_, ld zmin_, ld zmax_);
+  bool intersection(Line l, gPoint &I, gVector &n);
+private:
+  ld xmin, xmax, ymin, ymax, zmin, zmax;
+};
+
 #endif //RAY_TRACING_BASIC_OBJECT_H
