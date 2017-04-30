@@ -45,6 +45,7 @@ Mat Scene::render() {
       }
 
       res.at<Vec3b>(i, j) = colorSum / (radius * 10);
+      printf("%.1lf%%\n", double(i * width + j) / (width * height) * 100);
     }
   }
   return res;
