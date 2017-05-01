@@ -50,4 +50,12 @@ private:
   ld xmin, xmax, ymin, ymax, zmin, zmax;
 };
 
+class Tube : public BasicObject {
+public:
+  Tube(ld ymin_, ld ymax_, ld xPivot_, ld zPivot_, ld rmin_, ld rmax_);
+  bool intersection(Line l, gPoint &I, gVector &n);
+private:
+  ld ymin, ymax, xPivot, zPivot, rmin, rmax;
+};
+
 #endif //RAY_TRACING_BASIC_OBJECT_H

@@ -199,3 +199,88 @@ bool Box::intersection(Line l, gPoint &I, gVector &n) {
 
   return its;
 }
+
+
+Tube::Tube(ld ymin_, ld ymax_, ld xPivot_, ld zPivot_, ld rmin_, ld rmax_) :
+        ymin(ymin_), ymax(ymax_), xPivot(xPivot_), zPivot(zPivot_), rmin(rmin_), rmax(rmax_) {}
+
+bool Tube::intersection(Line l, gPoint &I, gVector &n) {
+  if (l.P.y < ymin && l.v.y <= 0 || l.P.y > ymax && l.v.y >= 0) {
+    return false;
+  }
+
+  Line castL(l.P, gVector(l.v.x, 0, l.v.z));
+  ld S = dot(gPoint(xPivot, castL.P.y, zPivot) - castL.P, castL.v);
+  if (S <= 0) {
+    return false;
+  }
+
+  ld d = distance(gPoint(xPivot, l.P.y, zPivot), castL);
+  if (d > rmax) {
+    return false;
+  }
+
+  ld ty, trmin, trmax;
+  ld y0;
+  if (l.P.y < ymin && l.v.y > 0 || l.P.y >= ymin && l.P.y <= ymax && l.v.y < 0) {
+    y0 = ymin;
+  }
+  if (l.P.y > ymax && l.v.y < 0 || l.P.y >= ymin && l.P.y <= ymax && l.v.y > 0) {
+    y0 = ymax;
+  }
+  ty = (y0 - l.P.y) / l.v.y;
+
+  trmin = S + sqrt(rmin * rmin - d * d);
+  trmin /= norm(gVector(l.v.x, 0, l.v.z));
+
+  trmax = S;
+  bool outside = (distance(gPoint(xPivot, l.P.y, zPivot), l.P) > rmax);
+  if (outside) {
+    trmax -= sqrt(rmax * rmax - d * d);
+  }
+  else {
+    trmax += sqrt(rmax * rmax - d * d);
+  }
+  trmax /= norm(gVector(l.v.x, 0, l.v.z));
+
+  bool its = false;
+  ld nowt;
+
+  if (!its || ty < nowt) {
+    gPoint I1 = l.P + l.v * ty;
+    ld dist = distance(I1, gPoint(xPivot, I1.y, zPivot));
+    if (dist >= rmin && dist <= rmax) {
+      its = true;
+      nowt = ty;
+      I = I1;
+      if (fabs(y0 - ymin) < eps) {
+        n = gVector(0, -1, 0);
+      }
+      else {
+        n = gVector(0, 1, 0);
+      }
+    }
+  }
+
+  if (!its || trmin < nowt) {
+    gPoint I1 = l.P + l.v * trmin;
+    if (I1.y >= ymin && I1.y <= ymax) {
+      its = true;
+      nowt = trmin;
+      I = I1;
+      n = normalize(I1 - gPoint(xPivot, I1.y, zPivot));
+    }
+  }
+
+  if (!its || trmax < nowt) {
+    gPoint I1 = l.P + l.v * trmax;
+    if (I1.y >= ymin && I1.y <= ymax) {
+      its = true;
+      nowt = trmax;
+      I = I1;
+      n = normalize(gPoint(xPivot, I1.y, zPivot) - I1);
+    }
+  }
+
+  return its;
+}
