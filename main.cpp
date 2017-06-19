@@ -17,8 +17,8 @@ int main() {
   Light *light = new PointLight(gPoint(120, 40, 150), Vec3b(40, 40, 40));
   scene.addLight(light);
   scene.addLight(new PointLight(gPoint(320, 10, 20), Vec3b(200, 200, 200)));
-  BasicObject *sphere = new Sphere(gPoint(260, 280, 120), 50);
-  SimpleObject *object = new SimpleObject(sphere, Vec3b(40, 200, 10));
+  BasicObject *sphere = new Sphere(gPoint(160, 280, 120), 50);
+  SimpleObject *object = new SimpleObject(sphere, new GridTexture(0.1));
   object->setKS(0.9);
   /*
   object->setKD(0, 0, 0);
@@ -26,18 +26,19 @@ int main() {
   object->setTransmittance(0.8);
   object->setRefractivity(1.2);
    */
-  // scene.addObject(object);
+  scene.addObject(object);
 
   BasicObject *sphere1 = new Sphere(gPoint(420, 240, 410), 130);
   SimpleObject *object1 = new SimpleObject(sphere1, Vec3b(140, 100, 180));
   object1->setKS(0.6);
   // scene.addObject(object1);
 
-  BasicObject *sphere2 = new Sphere(gPoint(380, 240, 210), 40);
-  SimpleObject *object2 = new SimpleObject(sphere2, Vec3b(40, 200, 180));
-  object2->setKS(0.6);
-  object2->setReflectance(0.8);
-  // scene.addObject(object2);
+  BasicObject *sphere2 = new Sphere(gPoint(380, 240, 310), 90);
+  SimpleObject *object2 = new SimpleObject(sphere2, new GridTexture(0.08, Vec3b(255, 255, 255), Vec3b(0, 0, 255)));
+  // SimpleObject *object2 = new SimpleObject(sphere2, Vec3b(255, 255, 20));
+  object2->setKS(0.9);
+  // object2->setReflectance(0.8);
+  scene.addObject(object2);
 
 
   vector<gPoint> vList;
@@ -124,7 +125,7 @@ int main() {
   // scene.addObject(object6);
 
   BasicObject *tube = new Tube(320, 440, 300, 350, 50, 100);
-  SimpleObject *object7 = new SimpleObject(tube, Vec3b(100, 50, 180));
+  SimpleObject *object7 = new SimpleObject(tube, new GridTexture);
   object7->setKS(0.9);
   // scene.addObject(object7);
 
@@ -159,6 +160,9 @@ int main() {
   }
   wa[2] = new SimpleObject(wall[2], new GridTexture(Vec3b(20, 20, 255), Vec3b(255, 255, 255)));
   wa[2]->setKS(0.1);
+  wa[4]->setKD(0, 0, 0);
+  wa[4]->setKA(0, 0, 0);
+  wa[4]->setReflectance(0.8);
 
 
   /*

@@ -35,6 +35,10 @@ Mat Scene::render() {
       gVector v;
       focalPlane->intersection0(l, P, v);
 
+      if (i == 89 && j == 301) {
+        std::cout << "ze" << std::endl;
+      }
+
       for (int k = 0; k < radius * 10; ++k) {
         int rou = rand() % radius;
         ld theta = (ld)(rand() % 360000) / 1000 / 180 * 3.1415926;

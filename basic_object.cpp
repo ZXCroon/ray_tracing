@@ -61,6 +61,24 @@ bool Sphere::intersection(Line l, gPoint &I, gVector &n, UvParam &uv) {
   }
   I = l.P + l.v * len;
   n = normalize(I - this->O);
+
+  // gVector uPivot(0, 0, 1);
+  // gVector vPivot(-1, 0, 0);
+  // uv.first = angle(n, uPivot) / (2 * PI);
+  // uv.second = angle(n, vPivot) / (2 * PI);
+  // if (I.x < this->O.x) {
+  //   uv.first = 1 - uv.first;
+  // }
+  // if (I.z < this->O.z) {
+  //   uv.second = 1 - uv.second;
+  // }
+  if (fabs(n.x) < eps && fabs(n.y) < eps) {
+    uv.first = uv.second = 0;
+  }
+  else {
+    uv.first = atan2(-n.y, -n.x) / (2 * PI);
+    uv.second = asin(n.z) / (2 * PI);
+  }
   return true;
 }
 
@@ -295,6 +313,13 @@ bool Tube::intersection(Line l, gPoint &I, gVector &n, UvParam &uv) {
       nowt = trmax;
       I = I1;
       n = normalize(gPoint(xPivot, I1.y, zPivot) - I1);
+
+      gVector uvPivot(0, 0, 1);
+      uv.first = angle(n, uvPivot) / (2 * PI);
+      if (I.x < xPivot) {
+         uv.first = 1 - uv.first;
+      }
+      uv.second = castL.P.y;
     }
   }
 
