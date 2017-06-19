@@ -129,19 +129,17 @@ int main() {
   object7->setKS(0.9);
   // scene.addObject(object7);
 
-  // pointMatrix pm{vector<gPoint>{gPoint(100, 200, 200), gPoint(200, 220, 220), gPoint(300, 250, 210)},
-  //                vector<gPoint>{gPoint(120, 220, 200), gPoint(180, 250, 250), gPoint(300, 300, 350)},
-  //                vector<gPoint>{gPoint(90, 280, 220), gPoint(190, 300, 300), gPoint(290, 390, 330)}};
-  pointMatrix pm{vector<gPoint>{gPoint(400, 480, 420), gPoint(550, 480, 420)},
-                 vector<gPoint>{gPoint(400, 100, 320), gPoint(550, 100, 320)},
-                 vector<gPoint>{gPoint(400, 480, 220), gPoint(550, 480, 220)}};
-  // pointMatrix pm{vector<gPoint>{gPoint(100, 100, 200), gPoint(300, 150, 210)},
-  //                vector<gPoint>{gPoint(90, 180, 220), gPoint(290, 290, 330)}};
-  // pointMatrix pm{vector<gPoint>{gPoint(100, 100, 100), gPoint(300, 100, 100)},
-  //                vector<gPoint>{gPoint(100, 300, 100), gPoint(300, 300, 100)}};
-  BasicObject *bezier = new BezierSurface(pm);
-  SimpleObject *object8 = new SimpleObject(bezier, new GridTexture(0.08));
-  scene.addObject(object8);
+  // pointMatrix pm{vector<gPoint>{gPoint(400, 480, 420), gPoint(550, 480, 420)},
+  //                vector<gPoint>{gPoint(400, 100, 320), gPoint(550, 100, 320)},
+  //                vector<gPoint>{gPoint(400, 480, 220), gPoint(550, 480, 220)}};
+  // BasicObject *bezier = new BezierSurface(pm);
+  // SimpleObject *object8 = new SimpleObject(bezier, new GridTexture(0.08));
+  // scene.addObject(object8);
+  vector<gPoint> pList{gPoint(120, 480, 0), gPoint(100, 440, 0), gPoint(150, 380, 0),
+                       gPoint(116, 380, 0), gPoint(66, 440, 0), gPoint(84, 480, 0)};
+  BasicObject *bezierRotator = new BezierRotator(pList, 300, 310);
+  SimpleObject *object9 = new SimpleObject(bezierRotator, new GridTexture(0.08));
+  scene.addObject(object9);
 
   BasicObject *wall[5];
   wall[0] = new Plane(gPoint(320, 0, 110), gVector(0, 1, 0));
@@ -167,11 +165,10 @@ int main() {
   }
   wa[2] = new SimpleObject(wall[2], new GridTexture(Vec3b(20, 20, 255), Vec3b(255, 255, 255)));
   wa[2]->setKS(0.1);
-  /*
+
   wa[4]->setKD(0, 0, 0);
   wa[4]->setKA(0, 0, 0);
   wa[4]->setReflectance(0.8);
-   */
 
 
   /*

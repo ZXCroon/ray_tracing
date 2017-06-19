@@ -66,6 +66,7 @@ public:
 private:
   ld ymin, ymax, xPivot, zPivot, rmin, rmax;
 
+  friend class BezierRotator;
   friend class Bounding;
 };
 

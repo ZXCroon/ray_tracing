@@ -14,10 +14,19 @@ typedef vector<vector<gPoint> > pointMatrix;
 class BezierRotator : public BasicObject {
 public:
   BezierRotator(vector<gPoint> pList_, ld xPivot_, ld zPivot_);
-  bool intersection(Line l, gPoint &I, gVector &n);
+  bool intersection(Line l, gPoint &I, gVector &n, UvParam &uv);
 private:
+  static const ld TINY;
+
+  int N;
   vector<gPoint> pList;
   ld xPivot, zPivot;
+  Bounding *bounding;
+
+  Bounding *genBounding(ld tmin, ld tmax);
+  gPoint relativeValue(ld t);
+  gPoint value(ld t, ld theta);
+  void getDerivative(ld t, ld theta, gPoint &dT, gPoint &dTheta);
 };
 
 class BezierSurface : public BasicObject {
