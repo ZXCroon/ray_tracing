@@ -23,7 +23,7 @@ private:
 class BezierSurface : public BasicObject {
 public:
   BezierSurface(pointMatrix controllP_);
-  bool intersection(Line l, gPoint &I, gVector &n);
+  bool intersection(Line l, gPoint &I, gVector &n, UvParam &uv);
 private:
   static const ld TINY;
 

@@ -11,14 +11,14 @@ bool BezierRotator::intersection(Line l, gPoint &I, gVector &n) {
 
 }
 
-const ld BezierSurface::TINY = 0.0001;
+const ld BezierSurface::TINY = 0.01;
 
 BezierSurface::BezierSurface(pointMatrix controllP_) :
         controllP(controllP_), M(controllP_.size() - 1), N(controllP_[0].size() - 1) {
   bounding = genBounding(0, 1, 0, 1);
 }
 
-bool BezierSurface::intersection(Line l, gPoint &I, gVector &n) {
+bool BezierSurface::intersection(Line l, gPoint &I, gVector &n, UvParam &uv) {
   vector<ItsInfo> itsInfos = bounding->intersection(l);
   Mat M(3, 3, CV_64FC1);
   Mat F(3, 1, CV_64FC1);
@@ -27,7 +27,7 @@ bool BezierSurface::intersection(Line l, gPoint &I, gVector &n) {
   for (vector<ItsInfo>::iterator it = itsInfos.begin(); it != itsInfos.end(); ++it) {
     ItsInfo itsInfo = *it;
     ld umin = itsInfo.info[0], umax = itsInfo.info[1], vmin = itsInfo.info[2], vmax = itsInfo.info[3];
-    ld u = (umin + umax) / 2, v = (vmin + vmax) / 2, t = (itsInfo.P.x - l.P.x) / l.v.x;
+    ld u = (umin + umax) / 2, v = (vmin + vmax) / 2, t = (itsInfo.P.z - l.P.z) / l.v.z;
 
     for (int k = 0; k < 10; ++k) {
       gPoint f = value(u, v) - (l.P + t * l.v);
@@ -66,6 +66,7 @@ bool BezierSurface::intersection(Line l, gPoint &I, gVector &n) {
     if (norm(f) < 0.01) {
       I = l.P + t * l.v;
       n = normalize(cross(derivativeU(u, v), derivativeV(u, v)));
+      uv = UvParam(u, v);
       return true;
     }
   }

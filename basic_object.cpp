@@ -26,7 +26,7 @@ bool Plane::intersection(Line l, gPoint &I, gVector &n, UvParam &uv) {
   n = this->v;
 
   gVector pivot;
-  if (n.x < eps && n.y < eps) {
+  if (fabs(n.x) < eps && fabs(n.y) < eps) {
     pivot = gVector(1, 0, 0);
   }
   else {
@@ -76,7 +76,7 @@ bool Sphere::intersection(Line l, gPoint &I, gVector &n, UvParam &uv) {
     uv.first = uv.second = 0;
   }
   else {
-    uv.first = atan2(-n.y, -n.x) / (2 * PI);
+    uv.first = atan2(n.y, n.x) / (2 * PI);
     uv.second = asin(n.z) / (2 * PI);
   }
   return true;
@@ -302,7 +302,7 @@ bool Tube::intersection(Line l, gPoint &I, gVector &n, UvParam &uv) {
       its = true;
       nowt = trmin;
       I = I1;
-      n = normalize(I1 - gPoint(xPivot, I1.y, zPivot));
+      n = normalize(gPoint(xPivot, I1.y, zPivot) - I1);
     }
   }
 
@@ -312,15 +312,17 @@ bool Tube::intersection(Line l, gPoint &I, gVector &n, UvParam &uv) {
       its = true;
       nowt = trmax;
       I = I1;
-      n = normalize(gPoint(xPivot, I1.y, zPivot) - I1);
-
-      gVector uvPivot(0, 0, 1);
-      uv.first = angle(n, uvPivot) / (2 * PI);
-      if (I.x < xPivot) {
-         uv.first = 1 - uv.first;
-      }
-      uv.second = castL.P.y;
+      n = normalize(I1 - gPoint(xPivot, I1.y, zPivot));
     }
+  }
+
+  if (its) {
+    gVector uPivot(0, 0, 1);
+    uv.first = angle(n, uPivot) / (2 * PI);
+    if (I.x < xPivot) {
+      uv.first = 1 - uv.first;
+    }
+    uv.second = castL.P.y;
   }
 
   return its;

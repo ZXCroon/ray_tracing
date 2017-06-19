@@ -35,7 +35,7 @@ Mat Scene::render() {
       gVector v;
       focalPlane->intersection0(l, P, v);
 
-      if (i == 89 && j == 301) {
+      if (j == 200) {
         std::cout << "ze" << std::endl;
       }
 
