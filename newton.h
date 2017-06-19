@@ -6,11 +6,9 @@
 #define RAY_TRACING_NEWTON_H
 
 
-
-class newton {
+class Newton {
 
 };
-
 
 
 #endif //RAY_TRACING_NEWTON_H

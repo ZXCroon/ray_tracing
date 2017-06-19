@@ -33,7 +33,7 @@ Mat Scene::render() {
       Plane *focalPlane = new Plane(gPoint(0, 0, -zScreen), gVector(0, 0, -1));
       gPoint P;
       gVector v;
-      focalPlane->intersection(l, P, v);
+      focalPlane->intersection0(l, P, v);
 
       for (int k = 0; k < radius * 10; ++k) {
         int rou = rand() % radius;

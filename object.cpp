@@ -24,9 +24,23 @@ gVector Object::getNormalVector() {
 
 SimpleObject::SimpleObject(BasicObject *bobj_, Vec3b color_) :
         bobj(bobj_), color(color_),
+        texture(NULL), haveTexture(false),
         kD(gVector(color_) / 255),
         kA(gVector(color_) / 255),
         kS(0.4),
+        textureCoef(gVector(1, 1, 1)),
+        reflectance(0),
+        transmittance(0),
+        refractivity(1) {
+}
+
+SimpleObject::SimpleObject(BasicObject *bobj_, Texture *texture_) :
+        bobj(bobj_), color(Vec3b(0, 0, 0)),
+        texture(texture_), haveTexture(true),
+        kD(gVector(1, 1, 1)),
+        kA(gVector(1, 1, 1)),
+        kS(0.4),
+        textureCoef(gVector(1, 1, 1)),
         reflectance(0),
         transmittance(0),
         refractivity(1) {
@@ -113,13 +127,17 @@ Vec3b SimpleObject::localIllumination(Vec3b inten, gVector direction) {
   // gVector outDir = -normalVector * diffuse * 2 - direction;
   gVector outDir = mirror(direction, normalVector);
   ld specular = pow(double(dot(inl.v, outDir)), 3.0);
-  return diffuse * kD * inten + specular * kS * inten;
+  return diffuse * kD * textureCoef * inten + specular * kS * textureCoef * inten;
 }
 
 void SimpleObject::calc() {
-  intersectant = bobj->intersection(inl, intersection, normalVector);
+  UvParam uv;
+  intersectant = bobj->intersection(inl, intersection, normalVector, uv);
   if (!intersectant) {
     return;
   }
-
+  if (haveTexture) {
+    Vec3b color = texture->getColor(uv.first, uv.second);
+    textureCoef = gVector(color[0] / 255.0, color[1] / 255.0, color[2] / 255.0);
+  }
 }

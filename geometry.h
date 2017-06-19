@@ -8,6 +8,8 @@
 #include "base.h"
 #include "gmath.h"
 
+typedef std::pair<ld, ld> UvParam;
+
 class gPoint {
 public:
   ld x, y, z;
@@ -51,5 +53,6 @@ bool coplanar(vector<gPoint> vList);
 
 Vec3b operator*(ld k, Vec3b v);
 Vec3b operator*(gVector k, Vec3b v);
+gVector operator*(gVector va, gVector vb);
 
 #endif //RAY_TRACING_GEOMETRY_H

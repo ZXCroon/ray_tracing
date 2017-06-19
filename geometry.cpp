@@ -119,3 +119,7 @@ Vec3b operator*(gVector k, Vec3b c) {
                saturate_cast<uchar>(double(k[1] * c[1])),
                saturate_cast<uchar>(double(k[2] * c[2])));
 }
+
+gVector operator*(gVector va, gVector vb) {
+  return gVector(va[0] * vb[0], va[1] * vb[1], va[2] * vb[2]);
+}

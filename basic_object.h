@@ -9,9 +9,16 @@
 
 typedef vector<int> orderVector;
 
+class BezierSurface;
+
 class BasicObject {
 public:
-  virtual bool intersection(Line l, gPoint &I, gVector &n) = 0;
+  virtual bool intersection(Line l, gPoint &I, gVector &n, UvParam &uv) = 0;
+  bool intersection0(Line l, gPoint &I, gVector &n);
+};
+
+class Closed : public BasicObject {
+
 };
 
 class Plane : public BasicObject {
@@ -21,41 +28,45 @@ public:
   Plane(gPoint P_, gVector v_);
   Plane(gPoint P1, gPoint P2, gPoint P3);
 
-  bool intersection(Line l, gPoint &I, gVector &n);
+  bool intersection(Line l, gPoint &I, gVector &n, UvParam &uv);
 };
 
 class Facet : public BasicObject {
 public:
   Facet(vector<gPoint> vList_);
-  bool intersection(Line l, gPoint &I, gVector &n);
+  bool intersection(Line l, gPoint &I, gVector &n, UvParam &uv);
 private:
   vector<gPoint> vList;
   bool inside(gPoint P);
 };
 
-class Sphere : public BasicObject {
+class Sphere : public Closed {
 public:
   gPoint O;
   ld r;
   Sphere(gPoint O_, ld r_);
 
-  bool intersection(Line l, gPoint &I, gVector &n);
+  bool intersection(Line l, gPoint &I, gVector &n, UvParam &uv);
 };
 
-class Box : public BasicObject {
+class Box : public Closed {
 public:
   Box(ld xmin_, ld xmax_, ld ymin_, ld ymax_, ld zmin_, ld zmax_);
-  bool intersection(Line l, gPoint &I, gVector &n);
+  bool intersection(Line l, gPoint &I, gVector &n, UvParam &uv);
 private:
   ld xmin, xmax, ymin, ymax, zmin, zmax;
+
+  friend class BezierSurface;
 };
 
-class Tube : public BasicObject {
+class Tube : public Closed {
 public:
   Tube(ld ymin_, ld ymax_, ld xPivot_, ld zPivot_, ld rmin_, ld rmax_);
-  bool intersection(Line l, gPoint &I, gVector &n);
+  bool intersection(Line l, gPoint &I, gVector &n, UvParam &uv);
 private:
   ld ymin, ymax, xPivot, zPivot, rmin, rmax;
+
+  friend class Bounding;
 };
 
 #endif //RAY_TRACING_BASIC_OBJECT_H

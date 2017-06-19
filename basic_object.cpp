@@ -4,11 +4,17 @@
 
 #include "basic_object.h"
 
+bool BasicObject::intersection0(Line l, gPoint &I, gVector &n) {
+  UvParam uv;
+  return intersection(l, I, n, uv);
+}
+
+
 Plane::Plane(gPoint P_, gVector v_) : P(P_), v(normalize(v_)) {}
 
 Plane::Plane(gPoint P1, gPoint P2, gPoint P3) : P(P1), v(normalize(cross(P2 - P1, P3 - P2))) {}
 
-bool Plane::intersection(Line l, gPoint &I, gVector &n) {
+bool Plane::intersection(Line l, gPoint &I, gVector &n, UvParam &uv) {
   if (perpendicular(this->v, l.v)) {
     return false;
   }
@@ -18,13 +24,23 @@ bool Plane::intersection(Line l, gPoint &I, gVector &n) {
   }
   I = l.P + l.v * len;
   n = this->v;
+
+  gVector pivot;
+  if (n.x < eps && n.y < eps) {
+    pivot = gVector(1, 0, 0);
+  }
+  else {
+    pivot = normalize(gVector(n.y, -n.x, 0));
+  }
+  gVector shift = I - this->P;
+  uv = UvParam(dot(shift, pivot) / 5, norm(cross(shift, pivot)) / 5);
   return true;
 }
 
 
 Sphere::Sphere(gPoint O_, ld r_) : O(O_), r(r_) {}
 
-bool Sphere::intersection(Line l, gPoint &I, gVector &n) {
+bool Sphere::intersection(Line l, gPoint &I, gVector &n, UvParam &uv) {
   ld d = distance(this->O, l);
   if (d > this->r) {
     return false;
@@ -54,9 +70,9 @@ Facet::Facet(vector<gPoint> vList_) {
   vList = vList_;
 }
 
-bool Facet::intersection(Line l, gPoint &I, gVector &n) {
+bool Facet::intersection(Line l, gPoint &I, gVector &n, UvParam &uv) {
   Plane plane(vList[0], vList[1], vList[2]);
-  if (!plane.intersection(l, I, n)) {
+  if (!plane.intersection(l, I, n, uv)) {
     return false;
   }
   return inside(I);
@@ -115,7 +131,7 @@ bool Facet::inside(gPoint P) {
 Box::Box(ld xmin_, ld xmax_, ld ymin_, ld ymax_, ld zmin_, ld zmax_) :
         xmin(xmin_), xmax(xmax_), ymin(ymin_), ymax(ymax_), zmin(zmin_), zmax(zmax_) {}
 
-bool Box::intersection(Line l, gPoint &I, gVector &n) {
+bool Box::intersection(Line l, gPoint &I, gVector &n, UvParam &uv) {
   if (l.P.x < xmin && l.v.x <= 0 || l.P.x > xmax && l.v.x >= 0) {
     return false;
   }
@@ -204,7 +220,7 @@ bool Box::intersection(Line l, gPoint &I, gVector &n) {
 Tube::Tube(ld ymin_, ld ymax_, ld xPivot_, ld zPivot_, ld rmin_, ld rmax_) :
         ymin(ymin_), ymax(ymax_), xPivot(xPivot_), zPivot(zPivot_), rmin(rmin_), rmax(rmax_) {}
 
-bool Tube::intersection(Line l, gPoint &I, gVector &n) {
+bool Tube::intersection(Line l, gPoint &I, gVector &n, UvParam &uv) {
   if (l.P.y < ymin && l.v.y <= 0 || l.P.y > ymax && l.v.y >= 0) {
     return false;
   }

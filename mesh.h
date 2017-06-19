@@ -10,7 +10,7 @@
 class Mesh : public BasicObject {
 public:
   Mesh(vector<gPoint> vList_, vector<orderVector> fList_);
-  bool intersection(Line l, gPoint &I, gVector &n);
+  bool intersection(Line l, gPoint &I, gVector &n, UvParam &uv);
 
 private:
   vector<gPoint> vList;

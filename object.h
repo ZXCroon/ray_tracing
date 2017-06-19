@@ -7,6 +7,7 @@
 
 #include "basic_object.h"
 #include "light.h"
+#include "texture.h"
 
 typedef std::pair<Line, ld> ray;
 
@@ -33,6 +34,7 @@ protected:
 class SimpleObject : public Object {
 public:
   SimpleObject(BasicObject *bobj_, Vec3b color_);
+  SimpleObject(BasicObject *bobj_, Texture *texture_);
 
   void setKD(gVector kD_);
   void setKD(ld kDb_, ld kDg_, ld kDr_);
@@ -51,8 +53,10 @@ public:
 private:
   BasicObject *bobj;
   Vec3b color;
+  Texture *texture;
+  bool haveTexture;
 
-  gVector kD, kA;
+  gVector kD, kA, textureCoef;
   ld kS, reflectance, transmittance, refractivity;
 
 protected:

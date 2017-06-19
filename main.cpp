@@ -1,6 +1,14 @@
 #include <iostream>
 #include "scene.h"
 #include "mesh.h"
+#include "bezier.h"
+#include "convex_hull.h"
+
+void onMouse(int event, int x, int y, int flag, void *utsc) {
+  if (event == CV_EVENT_LBUTTONUP) {
+    std::cout << x << " " << y << std::endl;
+  }
+}
 
 int main() {
   Scene scene(300, 400, -220, gPoint(200, 200, -50));
@@ -23,7 +31,7 @@ int main() {
   BasicObject *sphere1 = new Sphere(gPoint(420, 240, 410), 130);
   SimpleObject *object1 = new SimpleObject(sphere1, Vec3b(140, 100, 180));
   object1->setKS(0.6);
-  scene.addObject(object1);
+  // scene.addObject(object1);
 
   BasicObject *sphere2 = new Sphere(gPoint(380, 240, 210), 40);
   SimpleObject *object2 = new SimpleObject(sphere2, Vec3b(40, 200, 180));
@@ -60,6 +68,7 @@ int main() {
   scene.addObject(object3);
    */
 
+  /*
   vList.clear();
   vList.push_back(gPoint(70, 480, 200));
   vList.push_back(gPoint(570, 480, 200));
@@ -88,7 +97,43 @@ int main() {
   object4->setRefractivity(1.4);
   object4->setReflectance(0.3);
   scene.addObject(object4);
+   */
 
+  vector<gPoint> vertices;
+  vertices.push_back(gPoint(250, 480, 200));
+  vertices.push_back(gPoint(400, 480, 200));
+  vertices.push_back(gPoint(400, 480, 350));
+  vertices.push_back(gPoint(250, 480, 350));
+  vertices.push_back(gPoint(250, 180, 200));
+  vertices.push_back(gPoint(400, 180, 200));
+  vertices.push_back(gPoint(400, 180, 350));
+  vertices.push_back(gPoint(250, 180, 350));
+
+  // vertices.push_back(gPoint(380, 470, 240));
+  // vertices.push_back(gPoint(400, 200, 220));
+  // vertices.push_back(gPoint(350, 250, 280));
+  // vertices.push_back(gPoint(320, 200, 230));
+  // vertices.push_back(gPoint(360, 280, 210));
+  Mesh convexHull = getConvexHull(vertices);
+  BasicObject *mesh = &convexHull;
+  SimpleObject *object5 = new SimpleObject(mesh, Vec3b(230, 130, 150));
+  // scene.addObject(object5);
+
+  BasicObject *box = new Box(250, 400, 180, 480, 200, 350);
+  SimpleObject *object6 = new SimpleObject(box, Vec3b(200, 140, 180));
+  // scene.addObject(object6);
+
+  BasicObject *tube = new Tube(320, 440, 300, 350, 50, 100);
+  SimpleObject *object7 = new SimpleObject(tube, Vec3b(100, 50, 180));
+  object7->setKS(0.9);
+  // scene.addObject(object7);
+
+  // pointMatrix pm{vector<gPoint>{gPoint(100, 100, 100), gPoint(200, 120, 120), gPoint(300, 150, 110)},
+  //                vector<gPoint>{gPoint(120, 120, 100), gPoint(180, 150, 150), gPoint(300, 200, 150)},
+  //                vector<gPoint>{gPoint(90, 180, 120), gPoint(190, 200, 200), gPoint(290, 290, 230)}};
+  // BasicObject *bezier = new BezierSurface(pm);
+  // SimpleObject *object8 = new SimpleObject(bezier, Vec3b(50, 60, 70));
+  // scene.addObject(object8);
 
   BasicObject *wall[5];
   wall[0] = new Plane(gPoint(320, 0, 110), gVector(0, 1, 0));
@@ -112,6 +157,9 @@ int main() {
      */
 
   }
+  wa[2] = new SimpleObject(wall[2], new GridTexture(Vec3b(20, 20, 255), Vec3b(255, 255, 255)));
+  wa[2]->setKS(0.1);
+
 
   /*
   delete wa[4];
@@ -122,15 +170,17 @@ int main() {
   wa[3]->setKD(0, 0, 0);
   wa[3]->setKA(0, 0, 0);
   wa[3]->setReflectance(0.8);
+  */
 
 
-
-
+  /*
   wa[1]->setKS(0.2);
   wa[1]->setKD(0, 0, 0);
   wa[1]->setKA(0, 0, 0);
   wa[1]->setReflectance(0.8);
+  */
 
+  /*
   wa[5]->setKS(0.2);
   wa[5]->setKD(0, 0, 0);
   wa[5]->setKA(0, 0, 0);
@@ -147,6 +197,7 @@ int main() {
   Mat img = scene.render();
   namedWindow("res");
   imshow("res", img);
+  setMouseCallback("res", onMouse, 0);
   waitKey(0);
   return 0;
 }
