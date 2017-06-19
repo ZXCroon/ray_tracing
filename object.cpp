@@ -39,7 +39,7 @@ SimpleObject::SimpleObject(BasicObject *bobj_, Texture *texture_) :
         texture(texture_), haveTexture(true),
         kD(gVector(1, 1, 1)),
         kA(gVector(1, 1, 1)),
-        kS(0.4),
+        kS(0),
         textureCoef(gVector(1, 1, 1)),
         reflectance(0),
         transmittance(0),
@@ -123,7 +123,7 @@ Vec3b SimpleObject::ambientIllumination(Vec3b inten) {
 Vec3b SimpleObject::localIllumination(Vec3b inten, gVector direction) {
 
   // judge occlusion
-  ld diffuse = -dot(normalVector, direction);
+  ld diffuse = fabs(dot(normalVector, direction));
   // gVector outDir = -normalVector * diffuse * 2 - direction;
   gVector outDir = mirror(direction, normalVector);
   ld specular = pow(double(dot(inl.v, outDir)), 3.0);

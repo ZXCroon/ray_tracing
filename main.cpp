@@ -129,11 +129,14 @@ int main() {
   object7->setKS(0.9);
   // scene.addObject(object7);
 
-  // pointMatrix pm{vector<gPoint>{gPoint(100, 100, 100), gPoint(200, 120, 120), gPoint(300, 150, 110)},
-  //                vector<gPoint>{gPoint(120, 120, 100), gPoint(180, 150, 150), gPoint(300, 200, 150)},
-  //                vector<gPoint>{gPoint(90, 180, 120), gPoint(190, 200, 200), gPoint(290, 290, 230)}};
-  pointMatrix pm{vector<gPoint>{gPoint(100, 100, 100), gPoint(300, 150, 110)},
-                 vector<gPoint>{gPoint(90, 180, 120), gPoint(290, 290, 230)}};
+  // pointMatrix pm{vector<gPoint>{gPoint(100, 200, 200), gPoint(200, 220, 220), gPoint(300, 250, 210)},
+  //                vector<gPoint>{gPoint(120, 220, 200), gPoint(180, 250, 250), gPoint(300, 300, 350)},
+  //                vector<gPoint>{gPoint(90, 280, 220), gPoint(190, 300, 300), gPoint(290, 390, 330)}};
+  pointMatrix pm{vector<gPoint>{gPoint(400, 480, 420), gPoint(550, 480, 420)},
+                 vector<gPoint>{gPoint(400, 100, 320), gPoint(550, 100, 320)},
+                 vector<gPoint>{gPoint(400, 480, 220), gPoint(550, 480, 220)}};
+  // pointMatrix pm{vector<gPoint>{gPoint(100, 100, 200), gPoint(300, 150, 210)},
+  //                vector<gPoint>{gPoint(90, 180, 220), gPoint(290, 290, 330)}};
   // pointMatrix pm{vector<gPoint>{gPoint(100, 100, 100), gPoint(300, 100, 100)},
   //                vector<gPoint>{gPoint(100, 300, 100), gPoint(300, 300, 100)}};
   BasicObject *bezier = new BezierSurface(pm);
