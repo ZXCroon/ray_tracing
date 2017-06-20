@@ -4,13 +4,11 @@
 
 #include "scene.h"
 
-Scene::Scene(int height_, int width_, int zScreen_, gPoint aperture_) :
-        height(height_), width(width_), zScreen(zScreen_), aperture(aperture_), ambientLight(new AmbientLight(Vec3b(0, 0, 0))),
-        radius(1) {}
-
-Scene::Scene(int height_, int width_, int zScreen_, gPoint aperture_, int radius_) :
-        height(height_), width(width_), zScreen(zScreen_), aperture(aperture_), ambientLight(new AmbientLight(Vec3b(0, 0, 0))),
-        radius(radius_) {}
+Scene::Scene(int width_, int height_, Plane screen_, gVector pivot1_, gPoint aperture_, int radius_) :
+        width(width_), height(height_), screen(screen_),
+        pivot1(normalize(pivot1_)), pivot2(normalize(cross(screen_.v, pivot1_))),
+        aperture(aperture_), ambientLight(new AmbientLight(Vec3b(0, 0, 0))),
+        radius(radius_), focalPlane(screen_.P + fabs(dot(aperture_ - screen_.P, screen_.v)) * 2 * screen_.v, screen_.v) {}
 
 void Scene::addObject(Object *object_) {
   objects.push_back(object_);
@@ -28,12 +26,11 @@ Mat Scene::render() {
   Mat res(height, width, CV_8UC3);
   for (int i = 0; i < res.rows; ++i) {
     for (int j = 0; j < res.cols; ++j) {
-      Line l(aperture, aperture - gPoint(res.cols - j, res.rows - i, zScreen));
+      Line l(aperture, aperture - calcStarting(res.cols - j, res.rows - i));
       Vec3i colorSum(0, 0, 0);
-      Plane *focalPlane = new Plane(gPoint(0, 0, -zScreen), gVector(0, 0, -1));
       gPoint P;
       gVector v;
-      focalPlane->intersection0(l, P, v);
+      focalPlane.intersection0(l, P, v);
 
       if (j == 276 && i == 272) {
         std::cout << "ze" << std::endl;
@@ -53,6 +50,10 @@ Mat Scene::render() {
     }
   }
   return res;
+}
+
+gPoint Scene::calcStarting(int x1, int x2) {
+  return screen.P + x1 * pivot1 + x2 * pivot2;
 }
 
 Vec3b Scene::rayTracing(Line l, ld decay) {

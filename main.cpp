@@ -11,7 +11,7 @@ void onMouse(int event, int x, int y, int flag, void *utsc) {
 }
 
 int main() {
-  Scene scene(300, 400, -220, gPoint(200, 200, -50));
+  Scene scene(640, 480, Plane(gPoint(0, 0, -440), gVector(0, 0, 1)), gVector(1, 0, 0), gPoint(250, 340, -130));
   scene.setAmbientLight(new AmbientLight(Vec3b(150, 150, 150)));
 
   Light *light = new PointLight(gPoint(120, 40, 150), Vec3b(40, 40, 40));
