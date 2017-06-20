@@ -198,6 +198,7 @@ bool Box::intersection(Line l, gPoint &I, gVector &n, UvParam &uv) {
       else {
         n = gVector(1, 0, 0);
       }
+      uv = UvParam((I.y - ymin) / 5, (I.z - zmin) / 5);
     }
   }
 
@@ -213,6 +214,7 @@ bool Box::intersection(Line l, gPoint &I, gVector &n, UvParam &uv) {
       else {
         n = gVector(0, 1, 0);
       }
+      uv = UvParam((I.x - xmin) / 5, (I.z - zmin) / 5);
     }
   }
 
@@ -228,6 +230,7 @@ bool Box::intersection(Line l, gPoint &I, gVector &n, UvParam &uv) {
       else {
         n = gVector(0, 0, 1);
       }
+      uv = UvParam((I.x - xmin) / 5, (I.y - ymin) / 5);
     }
   }
 

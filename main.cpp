@@ -121,8 +121,8 @@ int main() {
   // scene.addObject(object5);
 
   BasicObject *box = new Box(250, 400, 180, 480, 200, 350);
-  SimpleObject *object6 = new SimpleObject(box, Vec3b(200, 140, 180));
-  // scene.addObject(object6);
+  SimpleObject *object6 = new SimpleObject(box, new ImageTexture("wood.jpeg"));
+  scene.addObject(object6);
 
   BasicObject *tube = new Tube(320, 440, 200, 250, 50, 100);
   SimpleObject *object7 = new SimpleObject(tube, new GridTexture(0.08));
@@ -135,11 +135,18 @@ int main() {
   // BasicObject *bezier = new BezierSurface(pm);
   // SimpleObject *object8 = new SimpleObject(bezier, new GridTexture(0.08));
   // scene.addObject(object8);
-  vector<gPoint> pList{gPoint(120, 480, 0), gPoint(100, 440, 0), gPoint(150, 380, 0),
-                       gPoint(116, 380, 0), gPoint(66, 440, 0), gPoint(84, 480, 0)};
-  BasicObject *bezierRotator = new BezierRotator(pList, 300, 310);
-  SimpleObject *object9 = new SimpleObject(bezierRotator, new GridTexture(0.08));
-  scene.addObject(object9);
+
+  // vector<gPoint> pList{gPoint(120, 480, 0), gPoint(100, 440, 0), gPoint(150, 380, 0),
+  //                      gPoint(116, 380, 0), gPoint(66, 440, 0), gPoint(84, 480, 0)};
+  // BasicObject *bezierRotator = new BezierRotator(pList, 300, 310);
+  // SimpleObject *object9 = new SimpleObject(bezierRotator, Vec3b(0, 0, 0));
+  // object9->setKA(0, 0, 0);
+  // object9->setKD(0, 0, 0);
+  // object9->setKS(0.9);
+  // object9->setTransmittance(0.9);
+  // object9->setRefractivity(1.2);
+  // object9->setReflectance(0.5);
+  // scene.addObject(object9);
 
   BasicObject *wall[5];
   wall[0] = new Plane(gPoint(320, 0, 110), gVector(0, 1, 0));
@@ -209,6 +216,7 @@ int main() {
   namedWindow("res");
   imshow("res", img);
   setMouseCallback("res", onMouse, 0);
+  imwrite("output.jpg", img);
   waitKey(0);
   return 0;
 }
