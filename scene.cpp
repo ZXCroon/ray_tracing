@@ -9,9 +9,10 @@ Scene::Scene(int width_, int height_, Plane screen_, gVector pivot1_, gPoint ape
         pivot1(normalize(pivot1_)), pivot2(normalize(cross(screen_.v, pivot1_))),
         aperture(aperture_), ambientLight(new AmbientLight(Vec3b(0, 0, 0))),
         radius(radius_), focalPlane(screen_.P + fabs(dot(aperture_ - screen_.P, screen_.v)) * 2 * screen_.v, screen_.v) {
-  gPoint P0(307, 430, 305);
-  ld tmp = dot(P0 - screen.P, screen.v);
-  std::cout << tmp << std::endl;
+}
+
+void Scene::setFocalPlaneDist(ld d) {
+  focalPlane = Plane(screen.P + d * screen.v, screen.v);
 }
 
 void Scene::addObject(Object *object_) {
@@ -40,16 +41,18 @@ Mat Scene::render() {
         std::cout << "ze" << std::endl;
       }
 
-      for (int k = 0; k < radius * 10; ++k) {
+      int rounds = radius * 5;
+      for (int k = 0; k < rounds; ++k) {
         int rou = rand() % radius;
-        ld theta = (ld)(rand() % 360000) / 1000 / 180 * 3.1415926;
-        gPoint startPoint = aperture + gVector(rou * cos(theta), rou * sin(theta), 0);
+        ld theta = (ld)(rand() % 180000) / 1000 / 180 * PI;
+        ld phi = (ld)(rand() % 360000) / 1000 / 180 * PI;
+        gPoint startPoint = aperture + gVector(rou * sin(theta) * cos(phi), rou * sin(theta) * sin(phi), rou * cos(theta));
 
         Line ray(startPoint, P - startPoint);
         colorSum += rayTracing(ray, 1);
       }
 
-      res.at<Vec3b>(i, j) = colorSum / (radius * 10);
+      res.at<Vec3b>(i, j) = colorSum / rounds;
       printf("%.1lf%%\n", double(i * width + j) / (width * height) * 100);
     }
   }

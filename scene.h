@@ -15,6 +15,7 @@ public:
   void addObject(Object *object_);
   void setAmbientLight(AmbientLight *ambientLight_);
   void addLight(Light *light_);
+  void setFocalPlaneDist(ld d);
   Mat render();
 
 private:

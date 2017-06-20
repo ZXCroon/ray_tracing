@@ -11,7 +11,8 @@ void onMouse(int event, int x, int y, int flag, void *utsc) {
 }
 
 int main() {
-  Scene scene(640, 480, Plane(gPoint(-350, -260, -240), gVector(9.5, 1.5, 1.5)), gVector(1, 0, 0), gPoint(180, 280, 40), 10);
+  Scene scene(640, 480, Plane(gPoint(-350, -260, -240), gVector(9.5, 1.5, 1.5)), gVector(1, 0, 0), gPoint(180, 280, 40), 5);
+  scene.setFocalPlaneDist(830);
   scene.setAmbientLight(new AmbientLight(Vec3b(150, 150, 150)));
 
   Light *light = new PointLight(gPoint(120, 40, 150), Vec3b(40, 40, 40));
@@ -50,7 +51,7 @@ int main() {
   SimpleObject *object3 = new SimpleObject(facet, new GridTexture(6.54));
   object3->KAMultiple(0.3);
   object3->KDMultiple(0.3);
-  scene.addObject(object3);
+  // scene.addObject(object3);
 
 
   // vList.clear();
@@ -117,7 +118,7 @@ int main() {
 
   BasicObject *box = new Box(150, 433, 470, 480, 180, 463);
   SimpleObject *object6 = new SimpleObject(box, new ImageTexture("wood.jpeg", 30));
-  scene.addObject(object6);
+  // scene.addObject(object6);
 
   BasicObject *tube = new Tube(320, 440, 200, 250, 50, 100);
   SimpleObject *object7 = new SimpleObject(tube, new GridTexture(0.08));
@@ -155,13 +156,13 @@ int main() {
   object9->setTransmittance(0.9);
   object9->setRefractivity(1.2);
   object9->setReflectance(0.5);
-  scene.addObject(object9);
+  // scene.addObject(object9);
   BasicObject *chessSphere = new Sphere(gPoint(307, 412, 305), 10);
   SimpleObject *object10 = new SimpleObject(chessSphere, Vec3b(0, 0, 0));
   object->setKS(0.9);
-  object10->setTransmittance(0.9);
-  object10->setRefractivity(1.2);
-  object10->setReflectance(0.5);
+  // object10->setTransmittance(0.9);
+  // object10->setRefractivity(1.2);
+  // object10->setReflectance(0.5);
   scene.addObject(object10);
 
   BasicObject *wall[5];
