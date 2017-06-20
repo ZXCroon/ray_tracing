@@ -9,7 +9,7 @@ const ld BezierRotator::TINY = 0.01;
 BezierRotator::BezierRotator(vector<gPoint> pList_, ld xPivot_, ld zPivot_) :
         pList(pList_), xPivot(xPivot_), zPivot(zPivot_), N(pList_.size() - 1) {
   for (vector<gPoint>::iterator it = pList.begin(); it != pList.end(); ++it) {
-    assert(it->x > 0 && it->z == 0);
+    assert(it->x >= 0 && it->z == 0);
   }
   bounding = genBounding(0, 1);
 }

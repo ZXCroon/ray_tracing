@@ -8,7 +8,11 @@ Scene::Scene(int width_, int height_, Plane screen_, gVector pivot1_, gPoint ape
         width(width_), height(height_), screen(screen_),
         pivot1(normalize(pivot1_)), pivot2(normalize(cross(screen_.v, pivot1_))),
         aperture(aperture_), ambientLight(new AmbientLight(Vec3b(0, 0, 0))),
-        radius(radius_), focalPlane(screen_.P + fabs(dot(aperture_ - screen_.P, screen_.v)) * 2 * screen_.v, screen_.v) {}
+        radius(radius_), focalPlane(screen_.P + fabs(dot(aperture_ - screen_.P, screen_.v)) * 2 * screen_.v, screen_.v) {
+  gPoint P0(307, 430, 305);
+  ld tmp = dot(P0 - screen.P, screen.v);
+  std::cout << tmp << std::endl;
+}
 
 void Scene::addObject(Object *object_) {
   objects.push_back(object_);

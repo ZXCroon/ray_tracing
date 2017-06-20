@@ -11,7 +11,7 @@ void onMouse(int event, int x, int y, int flag, void *utsc) {
 }
 
 int main() {
-  Scene scene(640, 480, Plane(gPoint(0, 0, -440), gVector(0, 0, 1)), gVector(1, 0, 0), gPoint(250, 340, -130));
+  Scene scene(640, 480, Plane(gPoint(-350, -260, -240), gVector(9.5, 1.5, 1.5)), gVector(1, 0, 0), gPoint(180, 280, 40), 10);
   scene.setAmbientLight(new AmbientLight(Vec3b(150, 150, 150)));
 
   Light *light = new PointLight(gPoint(120, 40, 150), Vec3b(40, 40, 40));
@@ -42,32 +42,27 @@ int main() {
 
 
   vector<gPoint> vList;
-  /*
-  vList.push_back(gPoint(170, 480, 200));
-  vList.push_back(gPoint(270, 480, 200));
-  vList.push_back(gPoint(270, 180, 200));
-  vList.push_back(gPoint(170, 180, 200));
+  vList.push_back(gPoint(160, 469.5, 190));
+  vList.push_back(gPoint(422, 469.5, 190));
+  vList.push_back(gPoint(422, 469.5, 453));
+  vList.push_back(gPoint(160, 469.5, 453));
   BasicObject *facet = new Facet(vList);
-  SimpleObject *object3 = new SimpleObject(facet, Vec3b(70, 20, 40));
+  SimpleObject *object3 = new SimpleObject(facet, new GridTexture(6.54));
   object3->KAMultiple(0.3);
   object3->KDMultiple(0.3);
-  object3->setTransmittance(1);
-  object3->setRefractivity(1.4);
   scene.addObject(object3);
 
-  vList.clear();
-  vList.push_back(gPoint(170, 480, 205));
-  vList.push_back(gPoint(170, 180, 205));
-  vList.push_back(gPoint(270, 180, 205));
-  vList.push_back(gPoint(270, 480, 205));
-  facet = new Facet(vList);
-  object3 = new SimpleObject(facet, Vec3b(70, 20, 40));
-  object3->KAMultiple(0.3);
-  object3->KDMultiple(0.3);
-  object3->setTransmittance(1);
-  object3->setRefractivity(1.4);
-  scene.addObject(object3);
-   */
+
+  // vList.clear();
+  // vList.push_back(gPoint(156, 469.7, 186));
+  // vList.push_back(gPoint(427, 469.7, 186));
+  // vList.push_back(gPoint(427, 469.7, 457));
+  // vList.push_back(gPoint(156, 469.7, 457));
+  // BasicObject *facet1 = new Facet(vList);
+  // SimpleObject *object4 = new SimpleObject(facet1, Vec3b(70, 20, 40));
+  // object3->KAMultiple(0.3);
+  // object3->KDMultiple(0.3);
+  // scene.addObject(object4);
 
   /*
   vList.clear();
@@ -120,8 +115,8 @@ int main() {
   SimpleObject *object5 = new SimpleObject(mesh, Vec3b(230, 130, 150));
   // scene.addObject(object5);
 
-  BasicObject *box = new Box(250, 400, 180, 480, 200, 350);
-  SimpleObject *object6 = new SimpleObject(box, new ImageTexture("wood.jpeg"));
+  BasicObject *box = new Box(150, 433, 470, 480, 180, 463);
+  SimpleObject *object6 = new SimpleObject(box, new ImageTexture("wood.jpeg", 30));
   scene.addObject(object6);
 
   BasicObject *tube = new Tube(320, 440, 200, 250, 50, 100);
@@ -138,15 +133,36 @@ int main() {
 
   // vector<gPoint> pList{gPoint(120, 480, 0), gPoint(100, 440, 0), gPoint(150, 380, 0),
   //                      gPoint(116, 380, 0), gPoint(66, 440, 0), gPoint(84, 480, 0)};
-  // BasicObject *bezierRotator = new BezierRotator(pList, 300, 310);
-  // SimpleObject *object9 = new SimpleObject(bezierRotator, Vec3b(0, 0, 0));
+  vector<gPoint> pList{
+          // gPoint(0, 220, 0),
+          // gPoint(12, 230, 0),
+          gPoint(0, 422, 0),
+          gPoint(25.3, 422, 0),
+          gPoint(3.33, 419, 0),
+          gPoint(3.33, 433, 0),
+          gPoint(3.33, 441, 0),
+          gPoint(3.33, 445, 0),
+          gPoint(10, 448, 0),
+          gPoint(6, 459, 0),
+          gPoint(15.7, 467, 0),
+          gPoint(15, 470, 0)
+  };
+  BasicObject *bezierRotator = new BezierRotator(pList, 307, 305);
+  SimpleObject *object9 = new SimpleObject(bezierRotator, Vec3b(0, 0, 0));
   // object9->setKA(0, 0, 0);
   // object9->setKD(0, 0, 0);
-  // object9->setKS(0.9);
-  // object9->setTransmittance(0.9);
-  // object9->setRefractivity(1.2);
-  // object9->setReflectance(0.5);
-  // scene.addObject(object9);
+  object9->setKS(0.9);
+  object9->setTransmittance(0.9);
+  object9->setRefractivity(1.2);
+  object9->setReflectance(0.5);
+  scene.addObject(object9);
+  BasicObject *chessSphere = new Sphere(gPoint(307, 412, 305), 10);
+  SimpleObject *object10 = new SimpleObject(chessSphere, Vec3b(0, 0, 0));
+  object->setKS(0.9);
+  object10->setTransmittance(0.9);
+  object10->setRefractivity(1.2);
+  object10->setReflectance(0.5);
+  scene.addObject(object10);
 
   BasicObject *wall[5];
   wall[0] = new Plane(gPoint(320, 0, 110), gVector(0, 1, 0));
@@ -154,7 +170,7 @@ int main() {
   wall[2] = new Plane(gPoint(320, 480, 110) ,gVector(0, -1, 0));
   wall[3] = new Plane(gPoint(640, 240, 110), gVector(-1, 0, 0));
   wall[4] = new Plane(gPoint(320, 240, 520), gVector(0, 0, -1));
-  wall[5] = new Plane(gPoint(320, 240, -500), gVector(0, 0, 1));
+  wall[5] = new Plane(gPoint(320, 240, -300), gVector(0, 0, 1));
 
   SimpleObject *wa[6];
   for (int i = 0; i < 6; ++i) {
@@ -170,8 +186,8 @@ int main() {
      */
 
   }
-  wa[2] = new SimpleObject(wall[2], new GridTexture(Vec3b(20, 20, 255), Vec3b(255, 255, 255)));
-  wa[2]->setKS(0.1);
+  wa[2] = new SimpleObject(wall[2], new GridTexture(3, Vec3b(20, 20, 255), Vec3b(255, 255, 255)));
+  wa[2]->setKS(0.9);
 
   wa[4]->setKD(0, 0, 0);
   wa[4]->setKA(0, 0, 0);

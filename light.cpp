@@ -1,7 +1,3 @@
-//
-// Created by zxcroon on 17-4-20.
-//
-
 #include "light.h"
 
 PointLight::PointLight(gPoint position_, Vec3b intensity_) : position(position_), intensity(intensity_) {}
