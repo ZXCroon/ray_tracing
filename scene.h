@@ -16,6 +16,7 @@ public:
   void setAmbientLight(AmbientLight *ambientLight_);
   void addLight(Light *light_);
   void setFocalPlaneDist(ld d);
+  void superSamplingOn(bool b);
   Mat render();
 
 private:
@@ -26,8 +27,10 @@ private:
   vector<Object *> objects;
   AmbientLight *ambientLight;
   vector<Light *> lights;
+  bool ss;
 
-  gPoint calcStarting(int x1, int x2);
+  Vec3b renderOnce(gPoint startingPoint);
+  gPoint calcStarting(ld x1, ld x2);
   Vec3b rayTracing(Line l, ld decay);
 };
 

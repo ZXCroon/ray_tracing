@@ -34,7 +34,7 @@ protected:
 class SimpleObject : public Object {
 public:
   SimpleObject(BasicObject *bobj_, Vec3b color_);
-  SimpleObject(BasicObject *bobj_, Texture *texture_);
+  SimpleObject(BasicObject *bobj_, Texture *texture_, bool textureEnhance_=false);
 
   void setKD(gVector kD_);
   void setKD(ld kDb_, ld kDg_, ld kDr_);
@@ -55,6 +55,7 @@ private:
   Vec3b color;
   Texture *texture;
   bool haveTexture;
+  bool textureEnhance;
 
   gVector kD, kA, textureCoef;
   ld kS, reflectance, transmittance, refractivity;

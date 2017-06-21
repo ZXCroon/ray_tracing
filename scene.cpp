@@ -8,11 +8,15 @@ Scene::Scene(int width_, int height_, Plane screen_, gVector pivot1_, gPoint ape
         width(width_), height(height_), screen(screen_),
         pivot1(normalize(pivot1_)), pivot2(normalize(cross(screen_.v, pivot1_))),
         aperture(aperture_), ambientLight(new AmbientLight(Vec3b(0, 0, 0))),
-        radius(radius_), focalPlane(screen_.P + fabs(dot(aperture_ - screen_.P, screen_.v)) * 2 * screen_.v, screen_.v) {
+        radius(radius_), focalPlane(screen_.P + fabs(dot(aperture_ - screen_.P, screen_.v)) * 2 * screen_.v, screen_.v), ss(false) {
 }
 
 void Scene::setFocalPlaneDist(ld d) {
   focalPlane = Plane(screen.P + d * screen.v, screen.v);
+}
+
+void Scene::superSamplingOn(bool b) {
+  ss = b;
 }
 
 void Scene::addObject(Object *object_) {
@@ -29,37 +33,74 @@ void Scene::addLight(Light *light_) {
 
 Mat Scene::render() {
   Mat res(height, width, CV_8UC3);
+  vector<Vec3b> colorRec;
   for (int i = 0; i < res.rows; ++i) {
     for (int j = 0; j < res.cols; ++j) {
-      Line l(aperture, aperture - calcStarting(res.cols - j, res.rows - i));
-      Vec3i colorSum(0, 0, 0);
-      gPoint P;
-      gVector v;
-      focalPlane.intersection0(l, P, v);
-
-      if (j == 276 && i == 272) {
-        std::cout << "ze" << std::endl;
+      if (!ss) {
+        if (j == 329 && i == 172) {
+          std::cout << "cao" << std::endl;
+        }
+        res.at<Vec3b>(i, j) = renderOnce(calcStarting(res.cols - j, res.rows - i));
       }
-
-      int rounds = radius * 5;
-      for (int k = 0; k < rounds; ++k) {
-        int rou = rand() % radius;
-        ld theta = (ld)(rand() % 180000) / 1000 / 180 * PI;
-        ld phi = (ld)(rand() % 360000) / 1000 / 180 * PI;
-        gPoint startPoint = aperture + gVector(rou * sin(theta) * cos(phi), rou * sin(theta) * sin(phi), rou * cos(theta));
-
-        Line ray(startPoint, P - startPoint);
-        colorSum += rayTracing(ray, 1);
+      else {
+        colorRec.clear();
+        Vec3i sum(0, 0, 0);
+        Vec3b av;
+        int ssTimes = 0;
+        const ld di[9] = {0, -0.33, -0.33, 0, 0.33, 0.33, 0.33, 0, -0.33};
+        const ld dj[9] = {0, 0, 0.33, 0.33, 0.33, 0, -0.33, -0.33, -0.33};
+        for (int k = 0; k < 9; ++k) {
+          // ld di = rand() % 1000 / 1000.0 - 0.5, dj = rand() % 1000 / 1000.0 - 0.5;
+          Vec3b thisRes = renderOnce(calcStarting(res.cols - (j + dj[k]), res.rows - i + di[k]));
+          sum += thisRes;
+          ++ssTimes;
+          av = sum / ssTimes;
+          // if (k == 19) {
+          //   break;
+          // }
+          // if (k == 4 || k == 9) {
+          //   ld delta = 0;
+          //   for (vector<Vec3b>::iterator it = colorRec.begin(); it != colorRec.end(); ++it) {
+          //     delta += (abs((*it)[0] - av[0]) + abs((*it)[1] - av[1]) + abs((*it)[2] - av[2])) / 3.0;
+          //   }
+          //   delta /= colorRec.size();
+          //   if ((k == 4 && delta < 30) || (k == 9 && delta < 80)) {
+          //     break;
+          //   }
+          // }
+          // colorRec.push_back(thisRes);
+        }
+        res.at<Vec3b>(i, j) = av;
       }
-
-      res.at<Vec3b>(i, j) = colorSum / rounds;
       printf("%.1lf%%\n", double(i * width + j) / (width * height) * 100);
     }
   }
   return res;
 }
 
-gPoint Scene::calcStarting(int x1, int x2) {
+Vec3b Scene::renderOnce(gPoint startingPoint) {
+  Line l(aperture, aperture - startingPoint);
+  Vec3i colorSum(0, 0, 0);
+  gPoint P;
+  gVector v;
+  focalPlane.intersection0(l, P, v);
+
+  int rounds = radius * 6;
+  for (int k = 0; k < rounds; ++k) {
+    int rou = rand() % radius;
+    ld theta = (ld)(rand() % 180000) / 1000 / 180 * PI;
+    ld phi = (ld)(rand() % 360000) / 1000 / 180 * PI;
+    gPoint startPoint = aperture + gVector(rou * sin(theta) * cos(phi), rou * sin(theta) * sin(phi), rou * cos(theta));
+
+    Line ray(startPoint, P - startPoint);
+    colorSum += rayTracing(ray, 1);
+  }
+  return colorSum / rounds;
+}
+
+
+
+gPoint Scene::calcStarting(ld x1, ld x2) {
   return screen.P + x1 * pivot1 + x2 * pivot2;
 }
 

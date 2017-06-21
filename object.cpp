@@ -24,7 +24,7 @@ gVector Object::getNormalVector() {
 
 SimpleObject::SimpleObject(BasicObject *bobj_, Vec3b color_) :
         bobj(bobj_), color(color_),
-        texture(NULL), haveTexture(false),
+        texture(NULL), haveTexture(false), textureEnhance(false),
         kD(gVector(color_) / 255),
         kA(gVector(color_) / 255),
         kS(0.4),
@@ -34,11 +34,11 @@ SimpleObject::SimpleObject(BasicObject *bobj_, Vec3b color_) :
         refractivity(1) {
 }
 
-SimpleObject::SimpleObject(BasicObject *bobj_, Texture *texture_) :
+SimpleObject::SimpleObject(BasicObject *bobj_, Texture *texture_, bool textureEnhance_) :
         bobj(bobj_), color(Vec3b(0, 0, 0)),
-        texture(texture_), haveTexture(true),
+        texture(texture_), haveTexture(true), textureEnhance(textureEnhance_),
         kD(gVector(1, 1, 1)),
-        kA(gVector(1, 1, 1)),
+        kA(gVector(0.7, 0.7, 0.7)),
         kS(0),
         textureCoef(gVector(1, 1, 1)),
         reflectance(0),
@@ -127,7 +127,11 @@ Vec3b SimpleObject::localIllumination(Vec3b inten, gVector direction) {
   // gVector outDir = -normalVector * diffuse * 2 - direction;
   gVector outDir = mirror(direction, normalVector);
   ld specular = pow(double(dot(inl.v, outDir)), 3.0);
-  return diffuse * kD * textureCoef * inten + specular * kS * textureCoef * inten;
+  if (haveTexture) {
+    return diffuse * kD * textureCoef * (textureEnhance ? Vec3b(255, 255, 255) : inten) +
+            specular * kS * textureCoef * Vec3b(255, 255, 255);
+  }
+  return diffuse * kD * inten + specular * kS * inten;
 }
 
 void SimpleObject::calc() {
