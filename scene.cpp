@@ -6,6 +6,7 @@
 
 Scene::Scene(int width_, int height_, Plane screen_, gVector pivot1_, gPoint aperture_, int radius_) :
         width(width_), height(height_), screen(screen_), startR(0), startC(0),
+        ltR(0), ltC(0), roiW(width_), roiH(height_),
         pivot1(normalize(pivot1_)), pivot2(normalize(cross(screen_.v, pivot1_))),
         aperture(aperture_), ambientLight(new AmbientLight(Vec3b(0, 0, 0))), res(height_, width_, CV_8UC3),
         radius(radius_), focalPlane(screen_.P + fabs(dot(aperture_ - screen_.P, screen_.v)) * 2 * screen_.v, screen_.v), ss(false) {
@@ -15,6 +16,13 @@ void Scene::load(string imgName, int startR_, int startC_) {
   res = imread(imgName);
   startR = startR_;
   startC = startC_;
+}
+
+void Scene::setRoi(int ltR_, int ltC_, int roiW_, int roiH_) {
+  ltR = ltR_;
+  ltC = ltC_;
+  roiW = roiW_;
+  roiH = roiH_;
 }
 
 void Scene::setFocalPlaneDist(ld d) {
@@ -39,8 +47,8 @@ void Scene::addLight(Light *light_) {
 
 Mat Scene::render() {
   vector<Vec3b> colorRec;
-  for (int i = 0; i < res.rows; ++i) {
-    for (int j = 0; j < res.cols; ++j) {
+  for (int i = ltR; i < ltR + roiH; ++i) {
+    for (int j = ltC; j < ltC + roiW; ++j) {
       if (i < startR || i == startR && j < startC) {
         continue;
       }
@@ -63,8 +71,8 @@ Mat Scene::render() {
         }
         res.at<Vec3b>(i, j) = av;
       }
-      printf("%.3lf%%\n", double(i * width + j) / (width * height) * 100);
-      if ((i * width + j + 1) % 100 == 0) {
+      printf("%.3lf%%\n", double((i - ltR) * roiW + j - ltC) / (roiW * roiH) * 100);
+      if (((i - ltR) * roiW + j - ltC + 1) % 100 == 0) {
         imwrite("tmp.jpg", res);
         std::ofstream ofs("finished_rec");
         ofs << '(' << i << ',' << j << ')' << std::endl;
@@ -144,9 +152,6 @@ Vec3b Scene::rayTracing(Line l, ld decay) {
         break;
       }
     }
-    ///
-    // occluded = false;
-    ///
 
     if (!occluded) {
       color += firstObject->localIllumination(inten, direction);

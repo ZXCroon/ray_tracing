@@ -14,6 +14,7 @@ class Scene {
 public:
   Scene(int width, int height, Plane screen_, gVector pivot1_, gPoint aperture_, int radius_=1);
   void load(string imgName, int startR_, int startC_);
+  void setRoi(int ltR_, int ltC_, int roiW_, int roiH_);
   void addObject(Object *object_);
   void setAmbientLight(AmbientLight *ambientLight_);
   void addLight(Light *light_);
@@ -32,6 +33,7 @@ private:
   bool ss;
   Mat res;
   int startR, startC;
+  int ltR, ltC, roiW, roiH;
 
   Vec3b renderOnce(gPoint startingPoint);
   gPoint calcStarting(ld x1, ld x2);
