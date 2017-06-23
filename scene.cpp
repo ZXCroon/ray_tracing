@@ -5,10 +5,16 @@
 #include "scene.h"
 
 Scene::Scene(int width_, int height_, Plane screen_, gVector pivot1_, gPoint aperture_, int radius_) :
-        width(width_), height(height_), screen(screen_),
+        width(width_), height(height_), screen(screen_), startR(0), startC(0),
         pivot1(normalize(pivot1_)), pivot2(normalize(cross(screen_.v, pivot1_))),
-        aperture(aperture_), ambientLight(new AmbientLight(Vec3b(0, 0, 0))),
+        aperture(aperture_), ambientLight(new AmbientLight(Vec3b(0, 0, 0))), res(height_, width_, CV_8UC3),
         radius(radius_), focalPlane(screen_.P + fabs(dot(aperture_ - screen_.P, screen_.v)) * 2 * screen_.v, screen_.v), ss(false) {
+}
+
+void Scene::load(string imgName, int startR_, int startC_) {
+  res = imread(imgName);
+  startR = startR_;
+  startC = startC_;
 }
 
 void Scene::setFocalPlaneDist(ld d) {
@@ -32,10 +38,12 @@ void Scene::addLight(Light *light_) {
 }
 
 Mat Scene::render() {
-  Mat res(height, width, CV_8UC3);
   vector<Vec3b> colorRec;
   for (int i = 0; i < res.rows; ++i) {
     for (int j = 0; j < res.cols; ++j) {
+      if (i < startR || i == startR && j < startC) {
+        continue;
+      }
       if (!ss) {
         res.at<Vec3b>(i, j) = renderOnce(calcStarting(res.cols - j, res.rows - i));
       }

@@ -10,14 +10,17 @@ void onMouse(int event, int x, int y, int flag, void *utsc) {
   }
 }
 
-int main() {
+int main(int argc, char **argv) {
   //
   // Basic settings of scene
   //
-  Scene scene(640, 480, Plane(gPoint(-350, -260, -240), gVector(9.5, 1.5, 1.5)), gVector(1, 0, 0), gPoint(180, 280, 40));
-  // scene.setFocalPlaneDist(830);
+  Scene scene(640, 480, Plane(gPoint(-350, -260, -240), gVector(9.5, 1.5, 1.5)), gVector(1, 0, 0), gPoint(180, 280, 40), 7);
+  scene.setFocalPlaneDist(830);
   scene.superSamplingOn(true);
   scene.setAmbientLight(new AmbientLight(Vec3b(150, 150, 150)));
+  if (argc >= 4) {
+    scene.load(argv[1], atoi(argv[2]), atoi(argv[3]));
+  }
 
 
   //
