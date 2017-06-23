@@ -37,9 +37,6 @@ Mat Scene::render() {
   for (int i = 0; i < res.rows; ++i) {
     for (int j = 0; j < res.cols; ++j) {
       if (!ss) {
-        if (j == 329 && i == 172) {
-          std::cout << "cao" << std::endl;
-        }
         res.at<Vec3b>(i, j) = renderOnce(calcStarting(res.cols - j, res.rows - i));
       }
       else {
@@ -55,24 +52,17 @@ Mat Scene::render() {
           sum += thisRes;
           ++ssTimes;
           av = sum / ssTimes;
-          // if (k == 19) {
-          //   break;
-          // }
-          // if (k == 4 || k == 9) {
-          //   ld delta = 0;
-          //   for (vector<Vec3b>::iterator it = colorRec.begin(); it != colorRec.end(); ++it) {
-          //     delta += (abs((*it)[0] - av[0]) + abs((*it)[1] - av[1]) + abs((*it)[2] - av[2])) / 3.0;
-          //   }
-          //   delta /= colorRec.size();
-          //   if ((k == 4 && delta < 30) || (k == 9 && delta < 80)) {
-          //     break;
-          //   }
-          // }
-          // colorRec.push_back(thisRes);
         }
         res.at<Vec3b>(i, j) = av;
       }
-      printf("%.1lf%%\n", double(i * width + j) / (width * height) * 100);
+      printf("%.3lf%%\n", double(i * width + j) / (width * height) * 100);
+      if ((i * width + j + 1) % 100 == 0) {
+        imwrite("tmp.jpg", res);
+        std::ofstream ofs("finished_rec");
+        ofs << '(' << i << ',' << j << ')' << std::endl;
+        ofs.close();
+        std::cout << "tmp saved." << std::endl;
+      }
     }
   }
   return res;
@@ -85,7 +75,7 @@ Vec3b Scene::renderOnce(gPoint startingPoint) {
   gVector v;
   focalPlane.intersection0(l, P, v);
 
-  int rounds = radius * 6;
+  int rounds = (fabs(radius - 1) < eps ? 1 : radius * 20);
   for (int k = 0; k < rounds; ++k) {
     int rou = rand() % radius;
     ld theta = (ld)(rand() % 180000) / 1000 / 180 * PI;
@@ -97,8 +87,6 @@ Vec3b Scene::renderOnce(gPoint startingPoint) {
   }
   return colorSum / rounds;
 }
-
-
 
 gPoint Scene::calcStarting(ld x1, ld x2) {
   return screen.P + x1 * pivot1 + x2 * pivot2;

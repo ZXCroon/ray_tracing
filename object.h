@@ -35,6 +35,7 @@ class SimpleObject : public Object {
 public:
   SimpleObject(BasicObject *bobj_, Vec3b color_);
   SimpleObject(BasicObject *bobj_, Texture *texture_, bool textureEnhance_=false);
+  ~SimpleObject();
 
   void setKD(gVector kD_);
   void setKD(ld kDb_, ld kDg_, ld kDr_);

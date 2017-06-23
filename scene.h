@@ -8,6 +8,7 @@
 #include "base.h"
 #include "object.h"
 #include "light.h"
+#include <fstream>
 
 class Scene {
 public:

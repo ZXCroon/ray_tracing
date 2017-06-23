@@ -13,7 +13,10 @@ Vec3b GridTexture::getColor(ld u, ld v) {
 ImageTexture::ImageTexture(const string &name, ld factor_) : img(imread(name)), factor(factor_) {}
 
 Vec3b ImageTexture::getColor(ld u, ld v) {
-  int u1 = abs(int(u / factor * img.cols + 0.5)), v1 = abs(int(v / factor * img.cols + 0.5));
+  if (u != u || v != v) {
+    return Vec3b(0, 0, 0);
+  }
+  int u1 = abs(int(u / factor * img.cols + 0.5)), v1 = abs(int(v / factor * img.rows + 0.5));
   u1 %= 2 * img.cols;
   v1 %= 2 * img.rows;
   if (u1 >= img.cols) {

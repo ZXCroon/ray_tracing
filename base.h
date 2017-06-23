@@ -16,7 +16,7 @@
 
 using namespace cv;
 
-typedef long double ld;
+typedef double ld;
 
 const ld eps = 1e-5;
 

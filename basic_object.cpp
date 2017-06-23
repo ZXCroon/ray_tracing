@@ -246,7 +246,11 @@ bool Tube::intersection(Line l, gPoint &I, gVector &n, UvParam &uv) {
     return false;
   }
 
-  Line castL(l.P, gVector(l.v.x, 0, l.v.z));
+  gVector v(l.v.x, 0, l.v.z);
+  gVector vn = v / norm(v);
+  Line castL(l.P, vn);
+
+  // Line castL(l.P, gVector(l.v.x, 0, l.v.z));
   ld S = dot(gPoint(xPivot, castL.P.y, zPivot) - castL.P, castL.v);
   if (S <= 0) {
     return false;
@@ -325,7 +329,7 @@ bool Tube::intersection(Line l, gPoint &I, gVector &n, UvParam &uv) {
     if (I.x < xPivot) {
       uv.first = 1 - uv.first;
     }
-    uv.second = castL.P.y;
+    uv.second = (castL.P.y - ymin) / (ymax - ymin);
   }
 
   return its;

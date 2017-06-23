@@ -61,7 +61,7 @@ gVector cross(gVector va, gVector vb) {
 }
 
 ld norm(gVector v) {
-  return sqrt(double(v.x * v.x + v.y * v.y + v.z * v.z));
+  return sqrtl(v.x * v.x + v.y * v.y + v.z * v.z);
 }
 
 ld cosAngle(gVector va, gVector vb) {

@@ -11,134 +11,105 @@ void onMouse(int event, int x, int y, int flag, void *utsc) {
 }
 
 int main() {
+  //
+  // Basic settings of scene
+  //
   Scene scene(640, 480, Plane(gPoint(-350, -260, -240), gVector(9.5, 1.5, 1.5)), gVector(1, 0, 0), gPoint(180, 280, 40));
-  scene.setFocalPlaneDist(830);
-  // scene.superSamplingOn(true);
+  // scene.setFocalPlaneDist(830);
+  scene.superSamplingOn(true);
   scene.setAmbientLight(new AmbientLight(Vec3b(150, 150, 150)));
 
-  Light *light = new PointLight(gPoint(120, 40, 150), Vec3b(40, 40, 40));
-  scene.addLight(light);
+
+  //
+  // Lights
+  //
+  scene.addLight(new PointLight(gPoint(120, 40, 150), Vec3b(40, 40, 40)));
   scene.addLight(new PointLight(gPoint(320, 10, 20), Vec3b(200, 200, 200)));
 
+
+  //
+  // Sphere
+  //
   BasicObject *sphere = new Sphere(gPoint(190, 330, 120), 13);
-  SimpleObject *object = new SimpleObject(sphere, Vec3b(0, 0, 0));
-  object->setKS(0.9);
-  object->setKD(0, 0, 0);
-  object->setTransmittance(0.8);
-  object->setRefractivity(1.2);
-  object->setReflectance(0.3);
-  // scene.addObject(object);
-
-  BasicObject *sphere1 = new Sphere(gPoint(420, 240, 410), 130);
-  SimpleObject *object1 = new SimpleObject(sphere1, Vec3b(140, 100, 180));
-  object1->setKS(0.6);
-  // scene.addObject(object1);
-
-  BasicObject *sphere2 = new Sphere(gPoint(380, 240, 310), 90);
-  SimpleObject *object2 = new SimpleObject(sphere2, new GridTexture(0.08, Vec3b(255, 255, 255), Vec3b(0, 0, 255)));
-  // SimpleObject *object2 = new SimpleObject(sphere2, Vec3b(255, 255, 20));
-  object2->setKS(0.9);
-  // object2->setReflectance(0.8);
-  // scene.addObject(object2);
+  SimpleObject *sphereObject = new SimpleObject(sphere, Vec3b(0, 0, 0));
+  sphereObject->setKS(0.9);
+  sphereObject->setTransmittance(0.8);
+  sphereObject->setRefractivity(1.2);
+  sphereObject->setReflectance(0.3);
+  scene.addObject(sphereObject);
 
 
+  //
+  // Chessboard grids
+  //
   vector<gPoint> vList;
-  vList.push_back(gPoint(160, 469.5, 190));
-  vList.push_back(gPoint(422, 469.5, 190));
-  vList.push_back(gPoint(422, 469.5, 453));
-  vList.push_back(gPoint(160, 469.5, 453));
+  vList.push_back(gPoint(160, 469.7, 190));
+  vList.push_back(gPoint(422, 469.7, 190));
+  vList.push_back(gPoint(422, 469.7, 453));
+  vList.push_back(gPoint(160, 469.7, 453));
   BasicObject *facet = new Facet(vList);
-  SimpleObject *object3 = new SimpleObject(facet, new GridTexture(6.6));
-  object3->setKA(0.2, 0.2, 0.2);
-  object3->setKS(0.9);
-  object3->setReflectance(0.3);
-  scene.addObject(object3);
+  SimpleObject *chessboard = new SimpleObject(facet, new GridTexture(6.6));
+  chessboard->setKA(0.2, 0.2, 0.2);
+  chessboard->setKS(0.9);
+  chessboard->setReflectance(0.3);
+  scene.addObject(chessboard);
 
 
-  // vList.clear();
-  // vList.push_back(gPoint(156, 469.7, 186));
-  // vList.push_back(gPoint(427, 469.7, 186));
-  // vList.push_back(gPoint(427, 469.7, 457));
-  // vList.push_back(gPoint(156, 469.7, 457));
-  // BasicObject *facet1 = new Facet(vList);
-  // SimpleObject *object4 = new SimpleObject(facet1, Vec3b(70, 20, 40));
-  // object3->KAMultiple(0.3);
-  // object3->KDMultiple(0.3);
-  // scene.addObject(object4);
-
-  /*
-  vList.clear();
-  vList.push_back(gPoint(70, 480, 200));
-  vList.push_back(gPoint(570, 480, 200));
-  vList.push_back(gPoint(570, 480, 255));
-  vList.push_back(gPoint(70, 480, 255));
-  vList.push_back(gPoint(70, 180, 200));
-  vList.push_back(gPoint(570, 180, 200));
-  vList.push_back(gPoint(570, 180, 255));
-  vList.push_back(gPoint(70, 180, 255));
-  BasicObject *cube = new Mesh(vList, vector<orderVector>{
-          orderVector{0, 1, 5, 4},
-          orderVector{2, 3, 7, 6},
-          orderVector{1, 2, 6, 5},
-          orderVector{0, 4, 7, 3},
-          orderVector{4, 5, 6, 7},
-          orderVector{0, 3, 2, 1}
-  });
-  SimpleObject *object4 = new SimpleObject(cube, Vec3b(80, 100, 150));
-  object4->setKS(0.6);
-  object4->KAMultiple(0);
-  object4->KDMultiple(0);
-  // object4->setKA(0.5, 0.5, 0.5);
-  // object4->setKD(0.5, 0.5, 0.5);
-  // object4->setReflectance(0.3);
-  object4->setTransmittance(0.9);
-  object4->setRefractivity(1.4);
-  object4->setReflectance(0.3);
-  scene.addObject(object4);
-   */
-
-  vector<gPoint> vertices;
-  vertices.push_back(gPoint(250, 480, 200));
-  vertices.push_back(gPoint(400, 480, 200));
-  vertices.push_back(gPoint(400, 480, 350));
-  vertices.push_back(gPoint(250, 480, 350));
-  vertices.push_back(gPoint(250, 180, 200));
-  vertices.push_back(gPoint(400, 180, 200));
-  vertices.push_back(gPoint(400, 180, 350));
-  vertices.push_back(gPoint(250, 180, 350));
-
-  // vertices.push_back(gPoint(380, 470, 240));
-  // vertices.push_back(gPoint(400, 200, 220));
-  // vertices.push_back(gPoint(350, 250, 280));
-  // vertices.push_back(gPoint(320, 200, 230));
-  // vertices.push_back(gPoint(360, 280, 210));
-  Mesh convexHull = getConvexHull(vertices);
-  BasicObject *mesh = &convexHull;
-  SimpleObject *object5 = new SimpleObject(mesh, Vec3b(230, 130, 150));
-  // scene.addObject(object5);
-
+  //
+  // Chessboard wood
+  //
   BasicObject *box = new Box(150, 433, 470, 480, 180, 463);
-  SimpleObject *object6 = new SimpleObject(box, new ImageTexture("wood.jpeg", 30), true);
-  object6->setKA(0.5, 0.5, 0.5);
-  scene.addObject(object6);
+  SimpleObject *wood = new SimpleObject(box, new ImageTexture("wood.jpeg", 30), true);
+  wood->setKA(0.5, 0.5, 0.5);
+  scene.addObject(wood);
 
-  BasicObject *tube = new Tube(320, 440, 200, 250, 50, 100);
-  SimpleObject *object7 = new SimpleObject(tube, new GridTexture(0.08));
-  object7->setKS(0.9);
-  // scene.addObject(object7);
 
-  // pointMatrix pm{vector<gPoint>{gPoint(400, 480, 420), gPoint(550, 480, 420)},
-  //                vector<gPoint>{gPoint(400, 100, 320), gPoint(550, 100, 320)},
-  //                vector<gPoint>{gPoint(400, 480, 220), gPoint(550, 480, 220)}};
-  // BasicObject *bezier = new BezierSurface(pm);
-  // SimpleObject *object8 = new SimpleObject(bezier, new GridTexture(0.08));
-  // scene.addObject(object8);
+  //
+  // flag
+  //
+  BasicObject *tube = new Tube(415, 465, 340, 240, 1, 2);
+  SimpleObject *flagStick = new SimpleObject(tube, Vec3b(0, 0, 0));
+  flagStick->setKS(0.8);
+  flagStick->setTransmittance(0.9);
+  flagStick->setRefractivity(1.2);
+  flagStick->setReflectance(0.23);
+  scene.addObject(flagStick);
 
-  // vector<gPoint> pList{gPoint(120, 480, 0), gPoint(100, 440, 0), gPoint(150, 380, 0),
-  //                      gPoint(116, 380, 0), gPoint(66, 440, 0), gPoint(84, 480, 0)};
+  BasicObject *sphere1 = new Sphere(gPoint(340, 413, 240), 3);
+  SimpleObject *flagSphere = new SimpleObject(sphere1, Vec3b(0, 0, 0));
+  scene.addObject(flagSphere);
+  flagSphere->setKS(0.8);
+  flagSphere->setTransmittance(0.9);
+  flagSphere->setRefractivity(1.2);
+  flagSphere->setReflectance(0.23);
+
+  pointMatrix pm{vector<gPoint>{gPoint(336.5, 415, 236.5), gPoint(336.5, 443, 236.5)},
+                 vector<gPoint>{gPoint(357, 415, 245), gPoint(357, 443, 245)},
+                 vector<gPoint>{gPoint(360, 415, 223), gPoint(360, 443, 223)},
+                 vector<gPoint>{gPoint{365, 415, 225}, gPoint(365, 443, 225)}};
+  BasicObject *bezier = new BezierSurface(pm);
+  SimpleObject *flag = new SimpleObject(bezier, new ImageTexture("your_name.jpg", 1), true);
+  flag->setKA(0.4, 0.4, 0.4);
+  scene.addObject(flag);
+
   vector<gPoint> pList{
-          // gPoint(0, 220, 0),
-          // gPoint(12, 230, 0),
+          gPoint(3, 465, 0),
+          gPoint(10, 469.9, 0),
+          gPoint(0, 469.9, 0)
+  };
+  BasicObject *bR = new BezierRotator(pList, 340, 240);
+  SimpleObject *flagBase = new SimpleObject(bR, Vec3b(0, 0, 0));
+  flagBase->setKS(0.8);
+  flagBase->setTransmittance(0.9);
+  flagBase->setRefractivity(1.2);
+  flagBase->setReflectance(0.23);
+  scene.addObject(flagBase);
+
+
+  //
+  // Chess piece
+  //
+  vector<gPoint> pList1{
           gPoint(0, 422, 0),
           gPoint(25.3, 422, 0),
           gPoint(3.33, 419, 0),
@@ -150,29 +121,50 @@ int main() {
           gPoint(15.7, 467, 0),
           gPoint(15, 470, 0)
   };
-  BasicObject *bezierRotator = new BezierRotator(pList, 307, 305);
-  SimpleObject *object9 = new SimpleObject(bezierRotator, new ImageTexture("gold.jpg", 30), true);
-  object9->setKA(0.4, 0.4, 0.4);
-  // object9->setKD(0, 0, 0);
-  object9->setKS(0.97);
-  // object9->setTransmittance(0.9);
-  // object9->setRefractivity(1.2);
-  object9->setReflectance(0.25);
-  scene.addObject(object9);
-  BasicObject *chessSphere = new Sphere(gPoint(307, 412, 305), 10);
-  SimpleObject *object10 = new SimpleObject(chessSphere, new ImageTexture("gold.jpg", 30), true);
-  object10->setKS(0.97);
-  object10->setKA(0.4, 0.4, 0.4);
-  // object10->setTransmittance(0.9);
-  // object10->setRefractivity(1.2);
-  object10->setReflectance(0.25);
-  scene.addObject(object10);
+  BasicObject *bR1 = new BezierRotator(pList1, 307, 305);
+  SimpleObject *chessBase = new SimpleObject(bR1, new ImageTexture("gold.jpg", 30), true);
+  chessBase->setKA(0.4, 0.4, 0.4);
+  chessBase->setKS(0.97);
+  chessBase->setReflectance(0.25);
+  scene.addObject(chessBase);
+  BasicObject *sphere2 = new Sphere(gPoint(307, 412, 305), 10);
+  SimpleObject *chessSphere = new SimpleObject(sphere2, new ImageTexture("gold.jpg", 30), true);
+  chessSphere->setKS(0.97);
+  chessSphere->setKA(0.4, 0.4, 0.4);
+  chessSphere->setReflectance(0.25);
+  scene.addObject(chessSphere);
 
+
+  //
+  // Cup
+  //
+  BasicObject *bR2 = new Tube(430, 480, 483, 400, 24, 25);
+  SimpleObject *cupBody = new SimpleObject(bR2, new ImageTexture("porcelain.jpg", 30));
+  cupBody->setKA(0.2, 0.2, 0.2);
+  scene.addObject(cupBody);
+
+  pointMatrix pm1{vector<gPoint>{gPoint(483, 442, 378), gPoint(481, 440, 378),
+                                 gPoint(483, 438, 378), gPoint(485, 440, 378),
+                                 gPoint(483, 442, 378)},
+                  vector<gPoint>{gPoint(483, 453, 345), gPoint(481, 453, 343),
+                                 gPoint(485, 453, 341), gPoint(485, 453, 343),
+                                 gPoint(483, 453, 345)},
+                  vector<gPoint>{gPoint(483, 470, 378), gPoint(481, 472, 378),
+                                 gPoint(482, 474, 378), gPoint(485, 472, 378),
+                                 gPoint(483, 470, 378)}};
+  BasicObject *bezier1 = new BezierSurface(pm1);
+  SimpleObject *cupHandle = new SimpleObject(bezier1, Vec3b(115, 115, 115));
+  scene.addObject(cupHandle);
+
+
+  //
+  // Planes
+  //
   BasicObject *wall[5];
   wall[0] = new Plane(gPoint(320, 0, 110), gVector(0, 1, 0));
   wall[1] = new Plane(gPoint(0, 240, 110), gVector(1, 0, 0));
   wall[2] = new Plane(gPoint(320, 480, 110) ,gVector(0, -1, 0));
-  wall[3] = new Plane(gPoint(640, 240, 110), gVector(-1, 0, 0));
+  wall[3] = new Plane(gPoint(560, 240, 110), gVector(-1, 0, 0));
   wall[4] = new Plane(gPoint(320, 240, 520), gVector(0, 0, -1));
   wall[5] = new Plane(gPoint(320, 240, -300), gVector(0, 0, 1));
 
@@ -190,6 +182,8 @@ int main() {
      */
 
   }
+  wa[0] = new SimpleObject(wall[0], Vec3b(10, 10, 240));
+  wa[1] = new SimpleObject(wall[1], Vec3b(10, 230, 50));
   wa[2] = new SimpleObject(wall[2], new GridTexture(3, Vec3b(30, 30, 255), Vec3b(255, 255, 255)));
   wa[2]->setKS(0.9);
 
@@ -198,40 +192,17 @@ int main() {
   wa[4]->setReflectance(0.8);
 
 
-  /*
-  delete wa[4];
-  wa[4] = new SimpleObject(wall[4], Vec3b(100, 30, 80));
-
-
-  wa[3]->setKS(0.2);
-  wa[3]->setKD(0, 0, 0);
-  wa[3]->setKA(0, 0, 0);
-  wa[3]->setReflectance(0.8);
-  */
-
-
-  /*
-  wa[1]->setKS(0.2);
-  wa[1]->setKD(0, 0, 0);
-  wa[1]->setKA(0, 0, 0);
-  wa[1]->setReflectance(0.8);
-   */
-
-
-  /*
-  wa[5]->setKS(0.2);
-  wa[5]->setKD(0, 0, 0);
-  wa[5]->setKA(0, 0, 0);
-  wa[5]->setReflectance(0.5);
-   */
-
   scene.addObject(wa[0]);
-  scene.addObject(wa[1]);
+  // scene.addObject(wa[1]);
   scene.addObject(wa[2]);
   scene.addObject(wa[3]);
   scene.addObject(wa[4]);
-  scene.addObject(wa[5]);
+  // scene.addObject(wa[5]);
 
+  // static_cast<BezierSurface *>(bezier)->writeToObj("flag.obj");
+  // static_cast<BezierSurface *>(bezier1)->writeToObj("cup_handle.obj");
+  // static_cast<BezierRotator *>(bR)->writeToObj("flag_base.obj");
+  // static_cast<BezierRotator *>(bR1)->writeToObj("chess_base.obj");
   Mat img = scene.render();
   namedWindow("res");
   imshow("res", img);

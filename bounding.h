@@ -31,7 +31,7 @@ public:
 private:
   Closed *volume;
   vector<ld> info;
-  vector<Bounding*> children;
+  vector<Bounding *> children;
   vector<ItsInfo> intersectionWithoutSorting(Line l);
 };
 

@@ -46,6 +46,13 @@ SimpleObject::SimpleObject(BasicObject *bobj_, Texture *texture_, bool textureEn
         refractivity(1) {
 }
 
+SimpleObject::~SimpleObject() {
+  delete bobj;
+  bobj = NULL;
+  delete texture;
+  texture = NULL;
+}
+
 void SimpleObject::setKD(gVector kD_) {
   kD = kD_;
 }
@@ -92,7 +99,7 @@ vector<ray> SimpleObject::getEmergentRays() {
       ld sinr = sin(i) / refractivity;
       if (sinr > 1) {
         reflectance1 += transmittance;
-        reflectance1 = fmax(1, reflectance1);
+        reflectance1 = fmin(1, reflectance1);
       }
       else {
         ld r = asin(double(sinr));
@@ -108,6 +115,12 @@ vector<ray> SimpleObject::getEmergentRays() {
       gVector dir = normalize(inl.v + len * normalVector);
       emergentRays.push_back(ray(Line(intersection + eps * dir, dir), transmittance));
     }
+    if (transmittance > 1) {
+      std::cout << "A" << std::endl;
+    }
+  }
+  if (reflectance > 1) {
+    std::cout << reflectance << std::endl;
   }
   if (reflectance1 > eps) {
     gVector dir = -mirror(inl.v, normalVector);

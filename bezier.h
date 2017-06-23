@@ -8,6 +8,7 @@
 #include "basic_object.h"
 #include "mesh.h"
 #include "bounding.h"
+#include <fstream>
 
 typedef vector<vector<gPoint> > pointMatrix;
 
@@ -15,6 +16,7 @@ class BezierRotator : public BasicObject {
 public:
   BezierRotator(vector<gPoint> pList_, ld xPivot_, ld zPivot_);
   bool intersection(Line l, gPoint &I, gVector &n, UvParam &uv);
+  void writeToObj(string fileNmae);
 private:
   static const ld TINY;
 
@@ -33,6 +35,7 @@ class BezierSurface : public BasicObject {
 public:
   BezierSurface(pointMatrix controllP_);
   bool intersection(Line l, gPoint &I, gVector &n, UvParam &uv);
+  void writeToObj(string fileName);
 private:
   static const ld TINY;
 

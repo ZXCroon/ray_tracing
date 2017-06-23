@@ -265,3 +265,57 @@ gPoint BezierSurface::derivativeV(ld u, ld v) {
   }
   return res;
 }
+
+
+void BezierRotator::writeToObj(string fileName) {
+  std::ofstream ofs(fileName);
+  int tcnt = 0, thetacnt;
+  vector<vector<gPoint> > points;
+  for (ld t = 0; t <= 1; t += 0.001) {
+    thetacnt = 0;
+    points.push_back(vector<gPoint>());
+    for (ld theta = 0; theta < 2 * PI; theta += 0.003) {
+      points[tcnt].push_back(value(t, theta));
+      ++thetacnt;
+    }
+    ++tcnt;
+  }
+  for (int i = 0; i < tcnt; ++i) {
+    for (int j = 0; j < thetacnt; ++j) {
+      ofs << "v " << points[i][j].x << " " << points[i][j].y << " " << points[i][j].z << std::endl;
+    }
+  }
+  for (int i = 0; i < tcnt - 1; ++i) {
+    for (int j = 0; j < thetacnt - 1; ++j) {
+      ofs << "f " << i * thetacnt + j + 1 << " " << (i + 1) * thetacnt + j + 1 << " " << (i + 1) * thetacnt + j + 2 << " " << i * thetacnt + j + 2 << std::endl;
+    }
+  }
+  ofs.close();
+}
+
+void BezierSurface::writeToObj(string fileName) {
+  std::ofstream ofs(fileName);
+  int ucnt = 0, vcnt;
+  vector<vector<gPoint> > points;
+  for (ld u = 0; u <= 1; u += 0.001) {
+    vcnt = 0;
+    points.push_back(vector<gPoint>());
+    for (ld v = 0; v <= 1; v += 0.001) {
+      points[ucnt].push_back(value(u, v));
+      ++vcnt;
+    }
+    ++ucnt;
+  }
+  for (int i = 0; i < ucnt; ++i) {
+    for (int j = 0; j < vcnt; ++j) {
+      ofs << "v " << points[i][j].x << " " << points[i][j].y << " " << points[i][j].z << std::endl;
+    }
+  }
+  for (int i = 0; i < ucnt - 1; ++i) {
+    for (int j = 0; j < vcnt - 1; ++j) {
+      ofs << "f " << i * vcnt + j + 1 << " " << (i + 1) * vcnt + j + 1 << " " << (i + 1) * vcnt + j + 2 << " " << i * vcnt + j + 2 << std::endl;
+    }
+  }
+  ofs.close();
+
+}
