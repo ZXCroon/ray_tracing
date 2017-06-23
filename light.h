@@ -9,7 +9,7 @@
 
 class Light {
 public:
-  virtual void getLight(gPoint point, Vec3b &inten, gVector &direction) = 0;
+  virtual void getLight(gPoint point, Vec3b &inten, gVector &direction, int radius=1) = 0;
   virtual gPoint getPosition() = 0;
   Vec3b intensity;
 };
@@ -18,7 +18,7 @@ class PointLight : public Light {
 public:
   PointLight(gPoint position_, Vec3b intensity_);
   gPoint getPosition();
-  void getLight(gPoint point, Vec3b &inten, gVector &direction);
+  void getLight(gPoint point, Vec3b &inten, gVector &direction, int radius=1);
 
 private:
   gPoint position;

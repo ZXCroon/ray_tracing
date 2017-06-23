@@ -13,13 +13,14 @@
 class Scene {
 public:
   Scene(int width, int height, Plane screen_, gVector pivot1_, gPoint aperture_, int radius_=1);
-  void load(string imgName, int startR_, int startC_);
+  void load(string imgName, int startR_=0, int startC_=0);
   void setRoi(int ltR_, int ltC_, int roiW_, int roiH_);
   void addObject(Object *object_);
   void setAmbientLight(AmbientLight *ambientLight_);
   void addLight(Light *light_);
   void setFocalPlaneDist(ld d);
   void superSamplingOn(bool b);
+  void softShadowOn(int radius, int sampleTimes);
   Mat render();
 
 private:
@@ -34,6 +35,7 @@ private:
   Mat res;
   int startR, startC;
   int ltR, ltC, roiW, roiH;
+  int softRadius, softSampleTimes;
 
   Vec3b renderOnce(gPoint startingPoint);
   gPoint calcStarting(ld x1, ld x2);

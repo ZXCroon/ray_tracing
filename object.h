@@ -46,6 +46,8 @@ public:
   void setReflectance(ld reflectance_);
   void setTransmittance(ld transmittance_);
   void setRefractivity(ld refractivity_);
+  void setSpE(ld spE_);
+  void fresnelOn(bool b);
 
   vector<ray> getEmergentRays();
   Vec3b ambientIllumination(Vec3b inten);
@@ -57,9 +59,11 @@ private:
   Texture *texture;
   bool haveTexture;
   bool textureEnhance;
+  bool fresnel;
 
   gVector kD, kA, textureCoef;
   ld kS, reflectance, transmittance, refractivity;
+  ld spE;
 
 protected:
   void calc();

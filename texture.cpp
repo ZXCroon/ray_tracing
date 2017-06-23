@@ -20,10 +20,10 @@ Vec3b ImageTexture::getColor(ld u, ld v) {
   u1 %= 2 * img.cols;
   v1 %= 2 * img.rows;
   if (u1 >= img.cols) {
-    u1 = 2 * img.cols - u1;
+    u1 = 2 * img.cols - 1 - u1;
   }
   if (v1 >= img.rows) {
-    v1 = 2 * img.rows - v1;
+    v1 = 2 * img.rows  - 1 - v1;
   }
   return img.at<Vec3b>(v1, u1);
 }

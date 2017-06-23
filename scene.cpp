@@ -6,7 +6,7 @@
 
 Scene::Scene(int width_, int height_, Plane screen_, gVector pivot1_, gPoint aperture_, int radius_) :
         width(width_), height(height_), screen(screen_), startR(0), startC(0),
-        ltR(0), ltC(0), roiW(width_), roiH(height_),
+        ltR(0), ltC(0), roiW(width_), roiH(height_), softRadius(1), softSampleTimes(1),
         pivot1(normalize(pivot1_)), pivot2(normalize(cross(screen_.v, pivot1_))),
         aperture(aperture_), ambientLight(new AmbientLight(Vec3b(0, 0, 0))), res(height_, width_, CV_8UC3),
         radius(radius_), focalPlane(screen_.P + fabs(dot(aperture_ - screen_.P, screen_.v)) * 2 * screen_.v, screen_.v), ss(false) {
@@ -23,6 +23,11 @@ void Scene::setRoi(int ltR_, int ltC_, int roiW_, int roiH_) {
   ltC = ltC_;
   roiW = roiW_;
   roiH = roiH_;
+}
+
+void Scene::softShadowOn(int radius, int sampleTimes) {
+  softRadius = radius;
+  softSampleTimes = sampleTimes;
 }
 
 void Scene::setFocalPlaneDist(ld d) {
@@ -110,7 +115,7 @@ gPoint Scene::calcStarting(ld x1, ld x2) {
 
 Vec3b Scene::rayTracing(Line l, ld decay) {
   Vec3b color(0, 0, 0);
-  if (decay < 0.2) {
+  if (decay < 0.05) {
     return color;
   }
 
@@ -136,26 +141,31 @@ Vec3b Scene::rayTracing(Line l, ld decay) {
   for (vector<Light *>::iterator it = lights.begin(); it != lights.end(); ++it) {
     Vec3b inten;
     gVector direction(0, 0, 0);
+
+    int throughNum = 0;
+    for (int k = 0; k < softSampleTimes; ++k) {
+      (*it)->getLight(firstObject->getIntersection(), inten, direction, softRadius);
+
+      Line shadowRay(firstObject->getIntersection() - eps * direction, -direction);
+      bool occluded = false;
+      for (vector<Object *>::iterator it1 = objects.begin(); it1 != objects.end(); ++it1) {
+        if ((*it1) == firstObject) {
+          continue;
+        }
+        (*it1)->incidence(shadowRay);
+        if ((*it1)->beIntersectant() &&
+            distance((*it1)->getIntersection(), firstObject->getIntersection()) <
+            distance((*it)->getPosition(), firstObject->getIntersection())) {
+          occluded = true;
+          break;
+        }
+      }
+      if (!occluded) {
+        ++throughNum;
+      }
+    }
     (*it)->getLight(firstObject->getIntersection(), inten, direction);
-
-    Line shadowRay(firstObject->getIntersection() - eps * direction, -direction);
-    bool occluded = false;
-    for (vector<Object *>::iterator it1 = objects.begin(); it1 != objects.end(); ++it1) {
-      if ((*it1) == firstObject) {
-        continue;
-      }
-      (*it1)->incidence(shadowRay);
-      if ((*it1)->beIntersectant() &&
-              distance((*it1)->getIntersection(), firstObject->getIntersection()) <
-                      distance((*it)->getPosition(), firstObject->getIntersection())) {
-        occluded = true;
-        break;
-      }
-    }
-
-    if (!occluded) {
-      color += firstObject->localIllumination(inten, direction);
-    }
+    color += Vec3b((Vec3d)firstObject->localIllumination(inten, direction) * ((double)throughNum / softSampleTimes));
   }
 
   vector<ray> rays = firstObject->getEmergentRays();

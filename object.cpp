@@ -31,7 +31,8 @@ SimpleObject::SimpleObject(BasicObject *bobj_, Vec3b color_) :
         textureCoef(gVector(1, 1, 1)),
         reflectance(0),
         transmittance(0),
-        refractivity(1) {
+        refractivity(1),
+        spE(3) {
 }
 
 SimpleObject::SimpleObject(BasicObject *bobj_, Texture *texture_, bool textureEnhance_) :
@@ -43,7 +44,8 @@ SimpleObject::SimpleObject(BasicObject *bobj_, Texture *texture_, bool textureEn
         textureCoef(gVector(1, 1, 1)),
         reflectance(0),
         transmittance(0),
-        refractivity(1) {
+        refractivity(1),
+        spE(3) {
 }
 
 SimpleObject::~SimpleObject() {
@@ -90,7 +92,23 @@ void SimpleObject::setRefractivity(ld refractivity_) {
   refractivity = refractivity_;
 }
 
+void SimpleObject::setSpE(ld spE_) {
+  spE = spE_;
+}
+
+void SimpleObject::fresnelOn(bool b) {
+  fresnel = b;
+}
+
 vector<ray> SimpleObject::getEmergentRays() {
+  ld Rt = 1, Rr = 1;
+  if (fresnel) {
+    ld cosTheta = fabs(cosAngle(inl.v, normalVector));
+    ld R0 = (refractivity - 1) / (refractivity + 1);
+    R0 = R0 * R0;
+    Rr = R0 + (1 - R0) * powl(1 - cosTheta, 5);
+    Rt = 1 - Rr;
+  }
   vector<ray> emergentRays;
   ld reflectance1 = reflectance;
   if (transmittance > eps) {
@@ -105,7 +123,7 @@ vector<ray> SimpleObject::getEmergentRays() {
         ld r = asin(double(sinr));
         ld len = sin(i - r) / sin(r);
         gVector dir = normalize(inl.v - len * normalVector);
-        emergentRays.push_back(ray(Line(intersection + eps * dir, dir), transmittance));
+        emergentRays.push_back(ray(Line(intersection + eps * dir, dir), transmittance * Rt));
       }
     }
     else {
@@ -113,18 +131,15 @@ vector<ray> SimpleObject::getEmergentRays() {
       ld r = asin(double(sin(i) * refractivity));
       ld len = sin(r - i) / sin(r);
       gVector dir = normalize(inl.v + len * normalVector);
-      emergentRays.push_back(ray(Line(intersection + eps * dir, dir), transmittance));
+      emergentRays.push_back(ray(Line(intersection + eps * dir, dir), transmittance * Rt));
     }
     if (transmittance > 1) {
       std::cout << "A" << std::endl;
     }
   }
-  if (reflectance > 1) {
-    std::cout << reflectance << std::endl;
-  }
   if (reflectance1 > eps) {
     gVector dir = -mirror(inl.v, normalVector);
-    emergentRays.push_back(ray(Line(intersection + eps * dir, dir), reflectance1));
+    emergentRays.push_back(ray(Line(intersection + eps * dir, dir), reflectance1 * Rr));
   }
   return emergentRays;
 }
@@ -139,7 +154,7 @@ Vec3b SimpleObject::localIllumination(Vec3b inten, gVector direction) {
   ld diffuse = fabs(dot(normalVector, direction));
   // gVector outDir = -normalVector * diffuse * 2 - direction;
   gVector outDir = mirror(direction, normalVector);
-  ld specular = pow(double(dot(inl.v, outDir)), 3.0);
+  ld specular = powl(dot(inl.v, outDir), spE);
   if (haveTexture) {
     return diffuse * kD * textureCoef * (textureEnhance ? Vec3b(255, 255, 255) : inten) +
             specular * kS * textureCoef * Vec3b(255, 255, 255);

@@ -14,12 +14,16 @@ int main(int argc, char **argv) {
   //
   // Basic settings of scene
   //
-  Scene scene(640, 480, Plane(gPoint(-350, -260, -240), gVector(9.5, 1.5, 1.5)), gVector(1, 0, 0), gPoint(180, 280, 40), 7);
+  Scene scene(640, 480, Plane(gPoint(-350, -260, -240), gVector(9.5, 1.5, 1.5)), gVector(1, 0, 0), gPoint(180, 280, 40), 4);
   scene.setFocalPlaneDist(830);
   scene.superSamplingOn(true);
+  // scene.softShadowOn(30, 80);
   scene.setAmbientLight(new AmbientLight(Vec3b(150, 150, 150)));
-  if (argc >= 4) {
-    scene.load(argv[1], atoi(argv[2]), atoi(argv[3]));
+  if (argc >= 2) {
+    if (argc >= 4) {
+      scene.load(argv[1], atoi(argv[2]), atoi(argv[3]));
+    }
+    else scene.load(argv[1]);
   }
 
 
@@ -31,15 +35,34 @@ int main(int argc, char **argv) {
 
 
   //
-  // Sphere
+  // Spheres
   //
-  BasicObject *sphere = new Sphere(gPoint(190, 330, 120), 13);
+  BasicObject *sphere = new Sphere(gPoint(202, 370, 209), 30);
   SimpleObject *sphereObject = new SimpleObject(sphere, Vec3b(0, 0, 0));
   sphereObject->setKS(0.9);
-  sphereObject->setTransmittance(0.8);
+  sphereObject->setSpE(10);
+  sphereObject->setTransmittance(0.98);
   sphereObject->setRefractivity(1.2);
-  sphereObject->setReflectance(0.3);
+  sphereObject->setReflectance(0.98);
+  sphereObject->fresnelOn(true);
   scene.addObject(sphereObject);
+
+  BasicObject *sphere01 = new Sphere(gPoint(382, 445, 365), 25);
+  SimpleObject *sphereObject1 = new SimpleObject(sphere01, Vec3b(0, 0, 255));
+  sphereObject1->setKA(0.2, 0.2, 0.2);
+  sphereObject1->setKS(0.75);
+  sphereObject1->setKD(0.7, 0.7, 0.9);
+  sphereObject1->setSpE(100);
+  sphereObject1->setRefractivity(1.6);
+  sphereObject1->setReflectance(0.98);
+  sphereObject1->fresnelOn(true);
+  scene.addObject(sphereObject1);
+
+  BasicObject *sphere02 = new Sphere(gPoint(362, 450, 305), 20);
+  SimpleObject *sphereObject2 = new SimpleObject(sphere02, Vec3b(0, 0, 0));
+  sphereObject2->setReflectance(0.98);
+  sphereObject2->setKS(0.8);
+  scene.addObject(sphereObject2);
 
 
   //
@@ -161,6 +184,28 @@ int main(int argc, char **argv) {
 
 
   //
+  // Porcelain
+  //
+  vector<gPoint> pList2{
+          gPoint(10, 385, 0),
+          gPoint(10, 430, 0),
+          gPoint(53, 442, 0),
+          gPoint(30, 470, 0)
+  };
+  BasicObject *bR3 = new BezierRotator(pList2, 280, 375);
+  SimpleObject *porcelain = new SimpleObject(bR3, new ImageTexture("porcelain3.jpg", 0.8), true);
+  // SimpleObject *porcelain = new SimpleObject(bR3, Vec3b(234, 42, 25));
+  porcelain->setKA(0.3, 0.3, 0.3);
+  porcelain->setKS(0.9);
+  porcelain->setKD(0.7, 0.7, 0.76);
+  porcelain->setSpE(3);
+  porcelain->setRefractivity(1.8);
+  porcelain->setReflectance(0.98);
+  porcelain->fresnelOn(true);
+  scene.addObject(porcelain);
+
+
+  //
   // Planes
   //
   BasicObject *wall[5];
@@ -185,7 +230,6 @@ int main(int argc, char **argv) {
      */
 
   }
-  wa[0] = new SimpleObject(wall[0], Vec3b(10, 10, 240));
   wa[1] = new SimpleObject(wall[1], Vec3b(10, 230, 50));
   wa[2] = new SimpleObject(wall[2], new GridTexture(3, Vec3b(30, 30, 255), Vec3b(255, 255, 255)));
   wa[2]->setKS(0.9);
@@ -200,7 +244,7 @@ int main(int argc, char **argv) {
   scene.addObject(wa[2]);
   scene.addObject(wa[3]);
   scene.addObject(wa[4]);
-  // scene.addObject(wa[5]);
+  scene.addObject(wa[5]);
 
   // static_cast<BezierSurface *>(bezier)->writeToObj("flag.obj");
   // static_cast<BezierSurface *>(bezier1)->writeToObj("cup_handle.obj");
